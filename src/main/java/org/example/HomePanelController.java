@@ -33,7 +33,7 @@ public class HomePanelController {
         CircularProgressBar circle = new CircularProgressBar();
         circle.setProgress(0);
         circle.setPreferredSize(new Dimension(150, 150));
-        circle.setMaximumSize(new Dimension(150, 150));
+        circle.setMaximumSize(new Dimension(200, 200));
         circle.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         Timer timer = new Timer(15, null);
@@ -48,7 +48,7 @@ public class HomePanelController {
         timer.start();
 
         PrettyButton prettyButton = new PrettyButton("운동 시작");
-        prettyButton.setBounds(30, 100, 160, 50);
+        prettyButton.setBounds(30, 100, 200, 50);
         prettyButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -58,6 +58,21 @@ public class HomePanelController {
             }
         });
 
+        PrettyButton prettyButton2 = new PrettyButton("상태 진단");
+        prettyButton.setBounds(30, 100, 200, 50);
+        prettyButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("운동 시작 버튼 클릭됨!");
+                app.switchCard("ROUTINE");     // 💡 카드 전환!
+                app.routine_show();             // 💡 내용 갱신
+            }
+        });
+
+
+
+
+
         panel.add(Box.createVerticalStrut(30));
         panel.add(label);
         panel.add(Box.createVerticalStrut(20));
@@ -66,8 +81,10 @@ public class HomePanelController {
         panel.add(circle);
         panel.add(Box.createVerticalStrut(30));
         panel.add(settingLabel);
-        panel.add(Box.createVerticalStrut(100));
+        panel.add(Box.createVerticalStrut(50));
         panel.add(prettyButton);
+        panel.add(Box.createVerticalStrut(20));
+        panel.add(prettyButton2);
 
         panel.revalidate();
         panel.repaint();
