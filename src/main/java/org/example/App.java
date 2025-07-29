@@ -1,3 +1,5 @@
+package org.example;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -7,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+
 import org.example.HomePanelController;
 import org.example.RoutinePanelController;
 import org.example.StatisticsPanelController;
@@ -52,7 +55,6 @@ public class App extends JFrame {
         topPanel.setBackground(Color.BLACK);
         topPanel.setPreferredSize(new Dimension(500, 60));
 
-        // 로고
         ImageIcon logoIcon = new ImageIcon("src/icons/newbiehealthlogo.png");
         Image scaledLogo = logoIcon.getImage().getScaledInstance(120, 40, Image.SCALE_SMOOTH);
         JLabel logoLabel = new JLabel(new ImageIcon(scaledLogo));
@@ -61,7 +63,6 @@ public class App extends JFrame {
         leftPanel.setBackground(Color.BLACK);
         leftPanel.add(logoLabel);
 
-        // 우측 텍스트 + 동그란 이미지
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         rightPanel.setBackground(Color.BLACK);
 
@@ -108,8 +109,7 @@ public class App extends JFrame {
             iconLabel.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    cardLayout.show(centerPanel, names[index]);
-
+                    switchCard(names[index]);
                     switch (names[index]) {
                         case "HOME" -> home_show();
                         case "ROUTINE" -> routine_show();
@@ -131,7 +131,6 @@ public class App extends JFrame {
             JPanel page = new JPanel();
             page.setBackground(Color.BLACK);
 
-            // 각 이름에 따라 변수에 저장
             switch (name) {
                 case "HOME" -> homePanel = page;
                 case "ROUTINE" -> routinePanel = page;
@@ -146,38 +145,32 @@ public class App extends JFrame {
     }
 
     // ✅ 각 패널마다 show 함수 정의
-
-    private void home_show() {
-        HomePanelController.home_show(homePanel);
+    public void home_show() {
+        HomePanelController.home_show(homePanel, this);
     }
 
-    private void routine_show() {
-        RoutinePanelController.routine_show(routinePanel);
-    }
-    private void statistics_show() {
-        StatisticsPanelController.statistics_show(statisticsPanel);
-    }
-    private void diet_show() {
-        DietPanelController.diet_show(dietPanel);
-    }
-    private void tip_show() {
-        TipPanelController.tip_show(tipPanel);
+    public void routine_show() {
+        RoutinePanelController.routine_show(routinePanel,this);
     }
 
-    // ✅ 공통으로 텍스트 출력하는 메서드
-    private void showTextOnPanel(JPanel panel, String text) {
-        if (panel != null) {
-            panel.removeAll();
-            JLabel label = new JLabel(text);
-            label.setForeground(Color.WHITE);
-            label.setFont(new Font("Malgun Gothic", Font.BOLD, 24));
-            panel.add(label);
-            panel.revalidate();
-            panel.repaint();
-        }
+    public void statistics_show() {
+        StatisticsPanelController.statistics_show(statisticsPanel,this);
     }
 
-    // ✅ 동그란 프로필 이미지 만들기
+    public void diet_show() {
+        DietPanelController.diet_show(dietPanel,this);
+    }
+
+    public void tip_show() {
+        TipPanelController.tip_show(tipPanel,this);
+    }
+
+    // ✅ 카드 전환 함수 (새로 추가!)
+    public void switchCard(String name) {
+        cardLayout.show(centerPanel, name);
+    }
+
+    // ✅ 동그란 이미지
     private Image makeRoundedProfile(BufferedImage image, int size) {
         BufferedImage rounded = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = rounded.createGraphics();

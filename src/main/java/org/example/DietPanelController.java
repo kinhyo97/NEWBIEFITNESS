@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class DietPanelController {
-    public static void diet_show(JPanel panel) {
+    public static void diet_show(JPanel panel, App app) {
         panel.removeAll();
         panel.setLayout(new FlowLayout());
 

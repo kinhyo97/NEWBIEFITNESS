@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class TipPanelController {
-    public static void tip_show(JPanel panel) {
+    public static void tip_show(JPanel panel, App app) {
         panel.removeAll();
         panel.setLayout(new FlowLayout());
 
