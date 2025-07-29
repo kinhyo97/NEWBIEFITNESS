@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class StatisticsPanelController {
-    public static void statistics_show(JPanel panel) {
+    public static void statistics_show(JPanel panel, App app) {
         panel.removeAll();
         panel.setLayout(new FlowLayout());
 

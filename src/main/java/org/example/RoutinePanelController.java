@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class RoutinePanelController {
-    public static void routine_show(JPanel panel) {
+    public static void routine_show(JPanel panel,App app) {
         panel.removeAll();
         panel.setLayout(new FlowLayout());
 
