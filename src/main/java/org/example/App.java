@@ -8,6 +8,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.*;
 import javax.imageio.ImageIO;
 
 import org.example.HomePanelController;
@@ -17,6 +18,38 @@ import org.example.DietPanelController;
 import org.example.TipPanelController;
 
 public class App extends JFrame {
+    //쿼리설정
+    String url = "jdbc:mariadb://localhost:3306/newbiehealth"; // DB 주소와 포트, 스키마
+    String user = "root";       // 사용자명
+    String password = "1234"; // 비밀번호
+    String query = "SELECT * FROM exercise";  // 원하는 테이블 쿼리
+
+    //쿼리사용 예시
+    /*
+    try {
+        // 3. 드라이버 로드
+        Class.forName("org.mariadb.jdbc.Driver");
+        // 4. 커넥션 열기
+        Connection conn = DriverManager.getConnection(url, user, password);
+        // 5. 쿼리 실행
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(query);
+        // 6. 결과 출력
+        while (rs.next()) {
+            int id = rs.getInt("exercise_id");
+            String name = rs.getString("exercise_name");
+            System.out.println("운동 ID: " + id + ", 이름: " + name);
+        }
+        // 7. 자원 정리
+        rs.close();
+        stmt.close();
+        conn.close();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+     */
+
+
 
     private final String[] names = {"HOME", "ROUTINE", "STATISTICS", "DIET", "TIP"};
     private final String[] iconPaths = {
@@ -48,6 +81,7 @@ public class App extends JFrame {
 
         // 시작 시 홈 출력
         home_show();
+
     }
 
     private JPanel createTopPanel() {
