@@ -6,6 +6,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import org.example.component.PrettyButton;
+import org.example.uiutils.UIUtils;
 
 
 public class RoutinePanelController {
@@ -17,10 +18,10 @@ public class RoutinePanelController {
         panel.add(Box.createVerticalStrut(30));
 
         // 제목 추가 (패널에 직접 추가)
-        org.example.UIUtils.addTitleLabel(panel, "TODAY'S ROUTINE", 30, Color.PINK);
-        org.example.UIUtils.addTitleLabel(panel, "5 X 5 SUPER SET", 20, Color.WHITE);
-        org.example.UIUtils.addTitleLabel(panel, "2025-07-29 (MON)", 15, Color.WHITE);
-        org.example.UIUtils.addTitleLabel(panel, "EXERCISE      COUNT      WEIGHT      SET", 20, Color.WHITE);
+        org.example.uiutils.UIUtils.addTitleLabel(panel, "TODAY'S ROUTINE", 30, Color.PINK);
+        org.example.uiutils.UIUtils.addTitleLabel(panel, "5 X 5 SUPER SET", 20, Color.WHITE);
+        org.example.uiutils.UIUtils.addTitleLabel(panel, "2025-07-29 (MON)", 15, Color.WHITE);
+        org.example.uiutils.UIUtils.addTitleLabel(panel, "EXERCISE      COUNT      WEIGHT      SET", 20, Color.WHITE);
 
         panel.add(Box.createVerticalGlue());
 
