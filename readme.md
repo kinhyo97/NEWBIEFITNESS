@@ -39,6 +39,7 @@ $팀장
   git pull origin develop
   git fetch origin
   git checkout -b feat/login-page origin/feat/login-page
+- git push -u origin develop
 
 - develop 최신화
   git checkout develop
