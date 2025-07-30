@@ -88,7 +88,5 @@ public class HomePanelController {
 
         panel.revalidate();
         panel.repaint();
-
-
     }
 }
