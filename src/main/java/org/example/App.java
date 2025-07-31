@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import org.example.loginPage;
 
 import org.example.HomePanelController;
 import org.example.RoutinePanelController;
@@ -47,6 +48,7 @@ public class App extends JFrame {
         setVisible(true);
 
         // 시작 시 홈 출력
+        //new loginPage(this);
         home_show();
     }
 
