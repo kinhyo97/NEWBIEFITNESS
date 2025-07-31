@@ -2,7 +2,10 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
 
+import org.example.component.CircularProgressBar;
+import org.example.db.JdbcStatistics;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -16,14 +19,16 @@ public class StatisticsPanelController {
     public static void statistics_show(JPanel panel, App app) {
         panel.removeAll();
         panel.setLayout(new BorderLayout());  // flowLayout 에서 수정
-        panel.setBackground(Color.BLACK);
+        //panel.setBackground(new Color(46, 71, 83));  // 일단 RGB 값으로 변경해야 쓸만한 색 나옴.
+        // 점검 필요함
+
+        JPanel rounded = Rounded.createRoundedPanel(3, 3, Color.WHITE);
 
         // BorderLayout.NORTH에 들어갈 전체 상단 박스
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
         topPanel.setBackground(Color.BLACK);
 
-        // UiUtil 변경할 것
         JLabel titleLabel = new JLabel("Statistics");
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setFont(new Font("Malgun Gothic", Font.BOLD, 24));
@@ -32,24 +37,53 @@ public class StatisticsPanelController {
         titleLabel.setBackground(Color.BLACK);
         titleLabel.setOpaque(true);
 
-
-
-        // 상단 제목 배치
-        topPanel.add(Box.createVerticalStrut(20));
-        topPanel.add(titleLabel);
-        topPanel.add(Box.createVerticalStrut(30));
-        // 신체 정보 패널
-        topPanel.add(createBodyInfoPanel());
-        topPanel.add(Box.createVerticalStrut(50));
-        // 종합 분석 패널
-        topPanel.add(createSummaryPanel());
-
         // 스크롤바
         JScrollPane pageScroll = new JScrollPane(topPanel);
         pageScroll.setBorder(null);
         pageScroll.getVerticalScrollBar().setUnitIncrement(16);
 
+        topPanel.add(Box.createVerticalStrut(20));
+
+        // 상단 제목 배치
+        topPanel.add(Box.createVerticalStrut(20));
+        topPanel.add(titleLabel);
+        topPanel.add(Box.createVerticalStrut(30));
+
+
+        // 신체 정보 패널
+        topPanel.add(createBodyInfoPanel());
+        topPanel.add(Box.createVerticalStrut(50));
+
+        org.example.UIUtils.addTitleLabel(topPanel, "운동 목표 달성률", 30, Color.WHITE);
+
+        // 원형 프로그레스 박스
+        JPanel circleWrap = new JPanel();
+        circleWrap.setOpaque(true);
+        circleWrap.setBackground(Color.BLACK);
+        circleWrap.setLayout(new BorderLayout());
+        circleWrap.setMaximumSize(new Dimension(300, 300));
+
+        circleWrap.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // 여유 여백
+
+        CircularProgressBar progressBar = new CircularProgressBar();
+        progressBar.setPreferredSize(new Dimension(300, 300));
+        progressBar.setProgress(95);
+        circleWrap.add(progressBar, BorderLayout.CENTER);
+
+        topPanel.add(Box.createVerticalStrut(20));
+        topPanel.add(circleWrap);
+        topPanel.add(Box.createVerticalStrut(50));
+        circleWrap.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+
+        // 종합 분석 패널
+        topPanel.add(createSummaryPanel());
+        topPanel.add(Box.createVerticalStrut(20));
+
         panel.add(pageScroll, BorderLayout.CENTER); // 스크롤바
+
+
+        SwingUtilities.invokeLater(() -> pageScroll.getVerticalScrollBar().setValue(0));
 
         // 마우스 이벤트 처리 시 재배치, 변화 알림 및 재 페인팅
         panel.revalidate();
@@ -62,14 +96,16 @@ public class StatisticsPanelController {
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         panel.setBackground(Color.BLACK);
 
+        JdbcStatistics jdbcStat = new JdbcStatistics();
+        String[] info = jdbcStat.fetchBodyInfo();
 
-
-        StatBox weightBox = new StatBox("체중(kg)", "63.4");
-        StatBox fatBox = new StatBox("체지방률(%)", "18.2");
-        StatBox muscleBox = new StatBox("근육량(kg)", "6.4");
+        StatBox weightBox = new StatBox("체중(kg)", info[0]);
+        StatBox fatBox = new StatBox("체지방률(%)", info[1]);
+        StatBox muscleBox = new StatBox("근육량(kg)", info[2]);
 
         // 패널에 추가
         panel.add(Box.createHorizontalStrut(30));
+        
         panel.add(weightBox);
         panel.add(Box.createHorizontalStrut(30));
         panel.add(fatBox);
@@ -89,10 +125,10 @@ public class StatisticsPanelController {
 
         JPanel box = new JPanel();
         box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
-        box.setBackground(Color.WHITE);
-        box.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        box.setBackground(Color.LIGHT_GRAY);
+        box.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         box.setAlignmentX(Component.CENTER_ALIGNMENT);
-        box.setMaximumSize(new Dimension(350, 800));
+        box.setMaximumSize(new Dimension(350, 1400));
 
         addLabeledText(box,"운동 습관 분석", 24, Color.BLACK, 10);
         addLabeledText(box,"총 운동 시간 : 8시간 36분", 20, Color.BLACK, 50);
@@ -105,18 +141,30 @@ public class StatisticsPanelController {
 
         // 코드 너무 길어지는 것 같아서 메소드 리펙토링함 (addLabeledText)
         box.add(new LineSetting(1));
+        box.add(Box.createVerticalStrut(10));
         addLabeledText(box, "총 소모 칼로리", 20, Color.BLACK, 20);
         addLabeledText(box, "6,832 kcal", 40, Color.BLACK, 10);
+        box.add(Box.createVerticalStrut(20));
         box.add(new LineSetting(1));
+        box.add(Box.createVerticalStrut(20));
         addLabeledText(box, "체지방률, 근육량 변화 요약", 20, Color.BLACK, 20);
         addLabeledText(box, "(지난 주 대비)", 20, Color.DARK_GRAY, 10);
         addLabeledText(box, "체지방률 : 1.5 % 감소", 30, Color.BLACK, 10);
         addLabeledText(box, "골격근량 : 0.3 kg 증가", 30, Color.BLACK, 15);
+        box.add(Box.createVerticalStrut(20));
         box.add(new LineSetting(1));
-        addLabeledText(box, "이번 주 운동 목표 달성률", 20, Color.BLACK, 20);
-        addLabeledText(box, "95%", 40, Color.BLACK, 10);
+        box.add(Box.createVerticalStrut(20));
+        box.add(new LineSetting(1));
+        box.add(Box.createVerticalStrut(20));
+        addLabeledText(box, "한 줄 코멘트", 20, Color.BLACK, 20);
 
+        box.add(Box.createVerticalStrut(20));
+        JTextArea oneCommentLine = CommentLine("너무너무 훌륭해요!\n지금까지 꾸준히 운동하셨네요!");
+
+        box.add(oneCommentLine);
         // LineSetting 객체 : 구분선
+
+
 
         wrapper.add(box);
         return wrapper;
@@ -124,6 +172,18 @@ public class StatisticsPanelController {
     private static void addLabeledText(JPanel panel, String text, int fontSize, Color color, int spacingBefore) {
         panel.add(Box.createVerticalStrut(spacingBefore));
         panel.add(org.example.UIUtils.createTitleLabel(text, fontSize, color));
+    }
+
+    // JTextArea -> 자동 줄바꿈 가능!!!
+    public static JTextArea CommentLine(String comm) {
+        JTextArea comment = new JTextArea(comm);
+        comment.setFont(new Font("Malgun Gothic", Font.BOLD, 22));
+        comment.setLineWrap(true);
+        comment.setBackground(null);
+
+        comment.setMargin(new Insets(0, 20, 0, 0));
+
+        return comment;
     }
 }
 
@@ -135,7 +195,6 @@ class StatBox extends JPanel {
     public StatBox(String title, String value) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Color.GRAY);
-
         Dimension size = new Dimension(100, 80);
         setPreferredSize(size);
         setMaximumSize(size); // 반드시 함께 설정하기
@@ -148,11 +207,12 @@ class StatBox extends JPanel {
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         valueLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+
+
         add(titleLabel);
         add(Box.createVerticalStrut(5));
         add(valueLabel);
     }
-
 
     // 신체 정보 바꾸고 싶을 때 쓰는 메소드
     public void updateValue(String newValue) {
@@ -164,11 +224,21 @@ class WeeklyChartPanel extends JPanel {
     public WeeklyChartPanel(int[] counts) {
         setLayout(new BorderLayout());
 
+        String[] days = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+        String[] daysKorean = {"일", "월", "화", "수", "목", "금", "토"};
+
         // 데이터셋 생성(요일 및 운동 횟수)
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        String[] days = {"일", "월", "화", "수", "목", "금", "토"};
-        for (int i = 0; i < counts.length; i++) {
-            dataset.addValue(counts[i], "운동 횟수", days[i]);
+
+        JdbcStatistics jdbcStat = new JdbcStatistics();
+
+        Map<String, Integer> dataWeek = jdbcStat.fetchWorkoutCountByDay();
+
+
+        for (int i = 0; i < days.length; i++) {
+            String day = days[i];
+            int count = dataWeek.getOrDefault(day, 0);
+            dataset.addValue(count, "운동 횟수", daysKorean[i]);
         }
 
         // 꺾은선 차트
@@ -211,13 +281,40 @@ class WeeklyChartPanel extends JPanel {
 class LineSetting extends JPanel {
     public LineSetting(int thickness) {
         setBackground(Color.DARK_GRAY);
-        setPreferredSize(new Dimension(300, thickness));
+        setMaximumSize(new Dimension(Integer.MAX_VALUE, thickness)); // 가로 전체로 확장
+        setPreferredSize(new Dimension(400, thickness));
+        setBorder(null);  // 여백 제거
+    }
+    
+    @Override
+    public Insets getInsets() {
+        return new Insets(0, 0, 0, 0); // 내부 여백 제거
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(getBackground());
-        g.drawLine(0, 0 ,getWidth(), 0);  // 수평 직선
+        g.drawLine(0, 0 ,getWidth() - 1, 0);  // 수평 직선
+    }
+}
+
+// 라운딩 클래스
+
+class Rounded extends JPanel {
+    public static JPanel createRoundedPanel(int width, int height, Color bgColor) {
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(bgColor);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+            }
+        };
+        panel.setOpaque(true);
+        panel.setPreferredSize(new Dimension(width, height));
+        return panel;
     }
 }
