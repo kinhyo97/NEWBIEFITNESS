@@ -24,7 +24,7 @@ public class App extends JFrame {
     String user = "root";       // 사용자명
     String password = "1234"; // 비밀번호
     String query = "SELECT * FROM exercise";  // 원하는 테이블 쿼리
-
+    static boolean isLogined = false;
     //쿼리사용 예시
     /*
     try {
@@ -78,11 +78,8 @@ public class App extends JFrame {
         add(createBottomNav(), BorderLayout.SOUTH);
         add(createCenterPanel(), BorderLayout.CENTER);
 
-        setVisible(true);
-
-        // 시작 시 홈 출력
-        //new loginPage(this);
         home_show();
+        setVisible(true);
 
     }
 
@@ -219,6 +216,14 @@ public class App extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(App::new);
+        SwingUtilities.invokeLater(() -> {
+            new loginPage(() -> {
+                try {
+                    new App();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
     }
 }
