@@ -1,0 +1,44 @@
+import javax.swing.*;
+import java.awt.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+// 👇 MonthCalendarPanel이 외부에서 주어졌다고 가정합니다
+// import org.example.component.MonthCalendarPanel;
+
+public class CalendarTest {
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            // 1. 프레임 생성
+            JFrame frame = new JFrame("📅 날짜 선택 달력 테스트");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(400, 400);
+            frame.setLayout(new BorderLayout());
+
+            // 2. 날짜 표시용 라벨 (선택한 날짜를 보여줄 UI)
+            JLabel selectedDateLabel = new JLabel("선택된 날짜 없음", SwingConstants.CENTER);
+            selectedDateLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
+            selectedDateLabel.setForeground(Color.BLUE);
+
+            // 3. MonthCalendarPanel 생성 시 콜백 함수 전달
+            MonthCalendarPanel calendarPanel = new MonthCalendarPanel((LocalDate selectedDate) -> {
+                // 🔹 날짜 선택 시 수행할 작업 정의 (콜백 함수)
+                String formattedDate = selectedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                System.out.println("✅ 선택된 날짜: " + formattedDate);
+
+                // 🔸 선택된 날짜를 라벨에 표시
+                selectedDateLabel.setText("선택된 날짜: " + formattedDate);
+
+                // 🔹 DB조회, 기록 불러오기, 다른 패널 업데이트 등 원하는 작업 수행 가능
+                // ex) loadRoutineByDate(App.userKey, formattedDate, listPanel);
+            });
+
+            // 4. UI에 추가
+            frame.add(selectedDateLabel, BorderLayout.NORTH);   // 날짜 출력 라벨
+            frame.add(calendarPanel, BorderLayout.CENTER);      // 달력 본체
+
+            // 5. 표시
+            frame.setVisible(true);
+        });
+    }
+}
