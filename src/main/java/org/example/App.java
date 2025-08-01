@@ -24,7 +24,10 @@ public class App extends JFrame {
     String user = "root";       // 사용자명
     String password = "1234"; // 비밀번호
     String query = "SELECT * FROM exercise";  // 원하는 테이블 쿼리
-
+    public static boolean isLogined = false;
+    public static String userKey = null;
+    public static String user_id = null;
+    public static String user_name = null;
     //쿼리사용 예시
     /*
     try {
@@ -78,11 +81,9 @@ public class App extends JFrame {
         add(createBottomNav(), BorderLayout.SOUTH);
         add(createCenterPanel(), BorderLayout.CENTER);
 
-        setVisible(true);
-
-        // 시작 시 홈 출력
-        //new loginPage(this);
+        System.out.println("현재 로그인 유저 : "+userKey +" user_id : "+user_id);
         home_show();
+        setVisible(true);
 
     }
 
@@ -102,13 +103,13 @@ public class App extends JFrame {
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         rightPanel.setBackground(Color.BLACK);
 
-        JLabel welcomeLabel = new JLabel("홍길동님 환영합니다");
+        JLabel welcomeLabel = new JLabel(user_name+"님 환영합니다");
         welcomeLabel.setForeground(Color.WHITE);
         welcomeLabel.setFont(new Font("Malgun Gothic", Font.PLAIN, 14));
 
         JLabel profilePic = new JLabel();
         try {
-            BufferedImage profileImage = ImageIO.read(new File("src/icons/profile.png"));
+            BufferedImage profileImage = ImageIO.read(new File("src/user_profile/"+userKey+".png"));
             Image roundedProfile = makeRoundedProfile(profileImage, 40);
             profilePic.setIcon(new ImageIcon(roundedProfile));
         } catch (IOException e) {
@@ -219,6 +220,17 @@ public class App extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(App::new);
+        SwingUtilities.invokeLater(() -> {
+            new loginPage(() -> {
+                try {
+                    new App();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
     }
+
+
+
 }

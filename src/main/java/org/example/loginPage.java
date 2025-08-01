@@ -13,7 +13,7 @@ public class loginPage extends JFrame {
     String password = "1234";
     String query = "SELECT * FROM exercise";
 
-    public loginPage() {
+    public loginPage(Runnable onLoginSuccess) {
         setTitle("SUGGEST FITNESS");
         setSize(500, 800);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -23,7 +23,7 @@ public class loginPage extends JFrame {
 
         // 🔴 클래스가 아니라 객체로 생성해야 함
 
-        LoginBox loginBox = new LoginBox();  // ✅ 객체 생성
+        LoginBox loginBox = new LoginBox(onLoginSuccess);  // ✅ 객체 생성
         loginBox.setOpaque(false);
         add(loginBox, BorderLayout.CENTER);  // ✅ 이걸 추가
 
@@ -38,7 +38,7 @@ public class loginPage extends JFrame {
         public JButton loginButton;
         public JButton registerButton;
 
-        public LoginBox() {
+        public LoginBox(Runnable onLoginSuccess) {
             // 바깥 레이아웃 설정
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
             setBackground(new Color(0, 0, 0));  // 배경 검정
@@ -79,6 +79,46 @@ public class loginPage extends JFrame {
             loginButton.setMaximumSize(new Dimension(250,30));
             loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+
+            loginButton.addActionListener(e -> {
+                String inputId = userField.getText();
+                String inputPw = new String(passField.getPassword());
+                System.out.println("🟡 입력된 ID: " + inputId + ", PW: " + inputPw);
+
+                try {
+                    Class.forName("org.mariadb.jdbc.Driver");
+                    Connection conn = DriverManager.getConnection(
+                            "jdbc:mariadb://localhost:3306/newbiehealth", "root", "1234");
+
+                    String sql = "SELECT * FROM user WHERE user_id = ? AND password = ?";
+                    PreparedStatement pstmt = conn.prepareStatement(sql);
+                    pstmt.setString(1, inputId);
+                    pstmt.setString(2, inputPw);
+                    ResultSet rs = pstmt.executeQuery();
+
+                    if (rs.next()) {
+                        App.isLogined = true;
+                        App.userKey = rs.getString("user_key");
+                        App.user_id = rs.getString("user_id");
+                        App.user_name = rs.getString("name");
+                        System.out.println("🔑 로그인한 유저 키: " + App.userKey);
+
+                        dispose();            // 로그인 창 닫기
+                        onLoginSuccess.run(); // App 실행
+                    } else {
+                        JOptionPane.showMessageDialog(this, "아이디 또는 비밀번호가 틀렸습니다.");
+                    }
+
+                    rs.close();
+                    pstmt.close();
+                    conn.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "DB 연결 오류: " + ex.getMessage());
+                }
+            });
+
+// 2. ❗ UI 구성은 여기에 있어야 함 (리스너 밖)
             registerButton = new JButton("회원가입");
             registerButton.setMaximumSize(new Dimension(250,30));
             registerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -89,11 +129,8 @@ public class loginPage extends JFrame {
             titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             titleLabel.setForeground(Color.PINK);
 
-
-            // 컴포넌트 추가 순서 유지, boxPanel에 넣기
-            boxPanel.add(Box.createVerticalGlue());     // ⬅️ 상단 여백
-            //boxPanel.add(logoLabel);
-            //boxPanel.add(Box.createVerticalStrut(25));
+// ⬇️ boxPanel에 컴포넌트 추가
+            boxPanel.add(Box.createVerticalGlue());     // 상단 여백
             boxPanel.add(titleLabel);
             boxPanel.add(Box.createVerticalStrut(15));
             boxPanel.add(userField);
@@ -102,15 +139,13 @@ public class loginPage extends JFrame {
             boxPanel.add(Box.createVerticalStrut(15));
             boxPanel.add(loginButton);
             boxPanel.add(Box.createVerticalStrut(10));
+            //boxPanel.add(registerButton); // 🔴 이제 회원가입 버튼도 포함
             boxPanel.add(Box.createVerticalGlue());
-            //boxPanel.add(registerButton);              //
-           // boxPanel.add(Box.createVerticalGlue());
 
-            // 외부 LoginBox에 가운데 정렬로 추가
+// ⬇️ LoginBox 자체에 추가
             add(Box.createVerticalGlue());
             add(boxPanel);
             add(Box.createVerticalGlue());
-        }
     }
 
 
@@ -266,6 +301,6 @@ public class loginPage extends JFrame {
 
 
     public static void main(String[] args) {
-        new loginPage();
+
     }
-}
+}}
