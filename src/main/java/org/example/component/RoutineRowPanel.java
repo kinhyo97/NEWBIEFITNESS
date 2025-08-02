@@ -6,7 +6,6 @@ import java.awt.*;
 public class RoutineRowPanel extends JPanel {
     private JButton selectButton;
     private String selectedExerciseName = "";
-
     private JTextField count, weightField, setsField;
     private JCheckBox doneCheckBox;
 
@@ -72,23 +71,24 @@ public class RoutineRowPanel extends JPanel {
         }
     }
 
+    //RoutineRowPanel의 Getter 메서드들
     public String getExerciseName() {
         return selectedExerciseName;
-    }
+    } // 운동선택 버튼에서 선택된 운동 이름을 return
 
     public boolean isChecked() {
         return doneCheckBox.isSelected();
-    }
+    } // 체크박스 체크여부
 
     public String getReps() {
         return count.getText().trim();
-    }
+    } // reps필드 입력
 
     public String getWeight() {
         return weightField.getText().replace("kg", "").trim();
-    }
+    } //weight 필드입력
 
     public String getSets() {
         return setsField.getText().trim();
-    }
+    } //sets필드 입력 리턴
 }

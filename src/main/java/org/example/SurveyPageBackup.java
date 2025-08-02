@@ -1,46 +1,49 @@
+// SurveyPage.java
 package org.example;
 
 import org.example.component.RoundButton1;
 import org.example.component.SurveyProgressBar;
-import org.example.pages.PageWeightGoal;
-import org.example.pages.PageMealFrequency;
 import org.example.pages.PageExerciseHistory;
+import org.example.pages.PageMealFrequency;
+import org.example.pages.PageWeightGoal;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-public class SurveyPage extends JFrame {
+public class SurveyPageBackup extends JFrame {
     private JProgressBar progressBar;
     private CardLayout cardLayout;
     private JPanel cardPanel;
-    private int totalPages;
-    private int currentPage = 1;
+    private int totalPages; // 전체 페이지 수 저장
+    private int currentPage = 1; //현재 페이지 저장
+    private JButton backButton;
 
-    private final List<FadePanel> surveyPages = List.of(
-            new FadePanel(new PageWeightGoal()),
-            new FadePanel(new PageMealFrequency()),
-            new FadePanel(new PageExerciseHistory())
-    );
+    private final List<JPanel> surveyPages = List.of(
+            new PageWeightGoal(),
+            new PageMealFrequency(),
+            new PageExerciseHistory()
+            // 필요한 만큼 페이지 추가
+    ); //list 객체로 surveyPages를 통해 페이지 수를 관리
 
-    public SurveyPage() {
-        // ← floating 버튼
+    public SurveyPageBackup() {
         JButton floatingButton = new RoundButton1("←", 30);
-        floatingButton.setBounds(10, 10, 50, 30);
+        floatingButton.setBounds(10, 10, 50, 30);  // 원하는 위치에 띄우기
         floatingButton.addActionListener(e -> previousPage());
+
+        //  오버레이 패널 만들기
+        JLayeredPane overlay = getLayeredPane();  // JFrame 위에 떠 있는 레이어
         floatingButton.setVisible(true);
+        overlay.add(floatingButton, JLayeredPane.PALETTE_LAYER); // 중간 위 레이어에 추가
 
-        // 레이어 위에 버튼 추가
-        JLayeredPane overlay = getLayeredPane();
-        overlay.add(floatingButton, JLayeredPane.PALETTE_LAYER);
 
-        // 프레임 설정
+
         setTitle("SUGGEST FITNESS - SURVEY");
         setSize(500, 800);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        totalPages = surveyPages.size();
+        totalPages = surveyPages.size(); // ✅ 먼저 설정
 
         // 상단 프로그레스 바
         progressBar = new SurveyProgressBar(currentPage, totalPages);
@@ -51,18 +54,18 @@ public class SurveyPage extends JFrame {
         progressWrapper.add(progressBar, BorderLayout.CENTER);
         add(progressWrapper, BorderLayout.NORTH);
 
-        // 하단 "다음" 버튼
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        // 하단 버튼
+        JPanel bottomPanel = new JPanel();
         bottomPanel.setBackground(Color.WHITE);
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 50, 30));
+        bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
         JButton nextButton = new RoundButton1("다음", 50);
         nextButton.setPreferredSize(new Dimension(400, 40));
         nextButton.addActionListener(e -> nextPage());
         bottomPanel.add(nextButton);
-        add(bottomPanel, BorderLayout.SOUTH);
 
-        // 카드 레이아웃 패널
+        // 카드 레이아웃 구성
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
         cardPanel.setBackground(Color.WHITE);
@@ -72,33 +75,46 @@ public class SurveyPage extends JFrame {
         }
 
         add(cardPanel, BorderLayout.CENTER);
+        add(bottomPanel, BorderLayout.SOUTH);
         setVisible(true);
-
-        // 첫 페이지 페이드 인 시작
-        surveyPages.get(0).startFadeIn();
     }
 
     public void nextPage() {
+       // if (currentPage < totalPages) {
+           // currentPage++;
+           // cardLayout.next(cardPanel);
+           // progressBar.setValue(currentPage);
+
         if (currentPage < totalPages) {
             currentPage++;
-            FadePanel page = surveyPages.get(currentPage - 1);
+
+            // ✅ 진짜 내 페이지 가져오기
+            JPanel realPage = surveyPages.get(currentPage - 1);
+
+            // ✅ FadePanel로 감싸기
+            FadePanel fadePanel = new FadePanel(realPage);
+            fadePanel.setBackground(Color.WHITE);
+
+            // ✅ 카드에 등록
+            cardPanel.add(fadePanel, String.valueOf(currentPage));
             cardLayout.show(cardPanel, String.valueOf(currentPage));
-            page.startFadeIn();
+            fadePanel.startFadeIn();
+
             progressBar.setValue(currentPage);
         }
+
     }
 
     public void previousPage() {
         if (currentPage > 1) {
             currentPage--;
-            FadePanel page = surveyPages.get(currentPage - 1);
-            cardLayout.show(cardPanel, String.valueOf(currentPage));
-            page.startFadeIn();
+            cardLayout.previous(cardPanel);
             progressBar.setValue(currentPage);
         }
+        if (currentPage == 1) {
+        }
     }
-
     public static void main(String[] args) {
-        new SurveyPage();
+        new SurveyPageBackup();
     }
 }

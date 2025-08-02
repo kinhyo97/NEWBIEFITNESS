@@ -8,6 +8,9 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class PageMealFrequency extends JPanel {
+
+    private JLabel selectedGenderIcon = null;
+
     public PageMealFrequency() {
         setBackground(Color.WHITE);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -57,6 +60,18 @@ public class PageMealFrequency extends JPanel {
         JLabel femaleIcon = new JLabel(genderIcon);
         femaleIcon.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        femaleIcon.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // 기본 테두리 없음
+
+        femaleIcon.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if (selectedGenderIcon != null) {
+                    selectedGenderIcon.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // 이전 선택 해제
+                }
+                femaleIcon.setBorder(BorderFactory.createLineBorder(Color.PINK, 3)); // 현재 선택 강조
+                selectedGenderIcon = femaleIcon;
+            }
+        });
+
         JLabel femaleLabel = new JLabel("여성");
         femaleLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
         femaleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -72,6 +87,18 @@ public class PageMealFrequency extends JPanel {
 
         JLabel maleIcon = new JLabel(genderIcon);
         maleIcon.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        maleIcon.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // 초기 테두리
+
+        maleIcon.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if (selectedGenderIcon != null) {
+                    selectedGenderIcon.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // 이전 선택 해제
+                }
+                maleIcon.setBorder(BorderFactory.createLineBorder(Color.BLUE, 3)); // 선택 표시
+                selectedGenderIcon = maleIcon;
+            }
+        });
 
         JLabel maleLabel = new JLabel("남성");
         maleLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
