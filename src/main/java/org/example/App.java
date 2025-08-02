@@ -8,6 +8,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.*;
 import javax.imageio.ImageIO;
 import org.example.loginPage;
 
@@ -18,6 +19,41 @@ import org.example.DietPanelController;
 import org.example.TipPanelController;
 
 public class App extends JFrame {
+    //쿼리설정
+    String url = "jdbc:mariadb://localhost:3306/newbiehealth"; // DB 주소와 포트, 스키마
+    String user = "root";       // 사용자명
+    String password = "1234"; // 비밀번호
+    String query = "SELECT * FROM exercise";  // 원하는 테이블 쿼리
+    public static boolean isLogined = false;
+    public static String userKey = null;
+    public static String user_id = null;
+    public static String user_name = null;
+    //쿼리사용 예시
+    /*
+    try {
+        // 3. 드라이버 로드
+        Class.forName("org.mariadb.jdbc.Driver");
+        // 4. 커넥션 열기
+        Connection conn = DriverManager.getConnection(url, user, password);
+        // 5. 쿼리 실행
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(query);
+        // 6. 결과 출력
+        while (rs.next()) {
+            int id = rs.getInt("exercise_id");
+            String name = rs.getString("exercise_name");
+            System.out.println("운동 ID: " + id + ", 이름: " + name);
+        }
+        // 7. 자원 정리
+        rs.close();
+        stmt.close();
+        conn.close();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+     */
+
+
 
     private final String[] names = {"HOME", "ROUTINE", "STATISTICS", "DIET", "TIP"};
     private final String[] iconPaths = {
@@ -45,11 +81,10 @@ public class App extends JFrame {
         add(createBottomNav(), BorderLayout.SOUTH);
         add(createCenterPanel(), BorderLayout.CENTER);
 
+        System.out.println("현재 로그인 유저 : "+userKey +" user_id : "+user_id);
+        home_show();
         setVisible(true);
 
-        // 시작 시 홈 출력
-        //new loginPage(this);
-        home_show();
     }
 
     private JPanel createTopPanel() {
@@ -68,13 +103,13 @@ public class App extends JFrame {
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         rightPanel.setBackground(Color.BLACK);
 
-        JLabel welcomeLabel = new JLabel("홍길동님 환영합니다");
+        JLabel welcomeLabel = new JLabel(user_name+"님 환영합니다");
         welcomeLabel.setForeground(Color.WHITE);
         welcomeLabel.setFont(new Font("Malgun Gothic", Font.PLAIN, 14));
 
         JLabel profilePic = new JLabel();
         try {
-            BufferedImage profileImage = ImageIO.read(new File("src/icons/profile.png"));
+            BufferedImage profileImage = ImageIO.read(new File("src/user_profile/"+userKey+".png"));
             Image roundedProfile = makeRoundedProfile(profileImage, 40);
             profilePic.setIcon(new ImageIcon(roundedProfile));
         } catch (IOException e) {
@@ -185,6 +220,13 @@ public class App extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(App::new);
+        SwingUtilities.invokeLater(() -> {
+            new loginPage(() -> {
+                try {
+                    new App();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
     }
-}

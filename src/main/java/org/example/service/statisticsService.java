@@ -1,4 +1,6 @@
-package org.example.db;
+package org.example.service;
+
+import org.example.db.DatabaseUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -6,26 +8,20 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JdbcStatistics {
-    String url = "jdbc:mariadb://localhost:3306/newbiehealth";
-    String user = "root";
-    String password = "1234";
-//    String query = "SELECT * FROM statistics";
-    String mariaUrl = "org.mariadb.jdbc.Driver";
+
+public class StatisticsService {
 
     private Connection conn;
 
-    public JdbcStatistics() {
+    public StatisticsService() {
+
         try {
-            Class.forName(mariaUrl);
-            conn = DriverManager.getConnection(url, user, password);
-        } catch (ClassNotFoundException e) {
-            System.out.println("클래스 로드 오류 : " + e);
-        } catch (SQLException se) {
-            System.out.println("SQL 예외 발생 : " + se);
+            conn = DatabaseUtil.getConnection();
+        } catch (SQLException e) {
+            System.out.println("SQL 예외 발생 : " + e);
         }
     }
-    
+
     public List<String[]> fetchExerciseStatistics() {
         List<String[]> data = new ArrayList<>();
 
@@ -152,6 +148,6 @@ public class JdbcStatistics {
     }
 
     public static void main(String[] args) {
-        JdbcStatistics jdbcStat = new JdbcStatistics();
+        StatisticsService jdbcStat = new StatisticsService();
     }
 }
