@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 public class JdbcStatistics {
-    String url = "jdbc:mariadb://127.0.0.1:3306/newbiefitness";
+    String url = "jdbc:mariadb://localhost:3306/newbiehealth";
     String user = "root";
     String password = "1234";
-    String query = "SELECT * FROM statistics";
+//    String query = "SELECT * FROM statistics";
     String mariaUrl = "org.mariadb.jdbc.Driver";
 
     private Connection conn;
@@ -49,11 +49,18 @@ public class JdbcStatistics {
     public String[] fetchBodyInfo() {
         String[] info = new String[3];
 
-        String query = "SELECT weight, body_fat_after, muscle_mass_after FROM statistics WHERE user_id = 101 ORDER BY date DESC LIMIT 1";
+        String query = """
+                SELECT us.weight_kg, stat.body_fat_after, stat.muscle_mass_after
+                FROM statistics AS stat
+                JOIN user AS us ON stat.user_key = us.user_key
+                WHERE stat.user_key = 'U001'
+                ORDER BY stat.date DESC
+                LIMIT 1;
+                """;
         try (PreparedStatement pstmt = conn.prepareStatement(query);
             ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    info[0] = rs.getString("weight");
+                    info[0] = rs.getString("us.weight_kg");
                     info[1] = rs.getString("body_fat_after");
                     info[2] = rs.getString("muscle_mass_after");
                 }
@@ -67,18 +74,18 @@ public class JdbcStatistics {
     public Map<String, Integer> fetchWorkoutCountByDay() {
         Map<String, Integer> mapDay = new LinkedHashMap<>();  // LinkedHashMap<> : 입력한 순서대로 Key 보장
         // 텍스트 블록 """ """
-        String sql = """
-                    SELECT day_of_week, workout_count 
+        String query = """
+                    SELECT day_of_week, activity_minutes
                     FROM statistics GROUP BY day_of_week 
-                    ORDER BY FIELD(day_of_week, 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun')
+                    ORDER BY FIELD(day_of_week, 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat')
                 """;
         try {
-            PreparedStatement pstmt = conn.prepareStatement(sql);
+            PreparedStatement pstmt = conn.prepareStatement(query);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 String day = rs.getString("day_of_week");
-                int workoutCount = rs.getInt("workout_count");
-                mapDay.put(day, workoutCount);
+                int activityMinutes = rs.getInt("activity_minutes");
+                mapDay.put(day, activityMinutes);
             }
         }catch (SQLException se) {
             System.out.println("SQL 예외 : " + se);
@@ -87,6 +94,62 @@ public class JdbcStatistics {
         return mapDay;
     }
 
+    public int totalCalories() {
+        String query = """
+                    SELECT SUM(calories_burned) AS total_calories
+                    FROM statistics
+                """;
+        int calories = 0;
+
+        try (PreparedStatement pstmt = conn.prepareStatement(query); // try-catch-resource -> 자원 자동 닫기
+             ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                calories = rs.getInt("total_calories");
+            }
+        } catch (SQLException se) {
+            System.out.println("SQL 예외 : " + se);
+        }
+
+        return calories;
+    }
+
+    public double changeFatMass() {
+        String query = """
+                    SELECT SUM(ABS(body_fat_after - body_fat_before)) AS difference_fat 
+                    FROM statistics
+                """;
+        double differenceFat = 0.0;
+
+        try (PreparedStatement pstmt = conn.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                differenceFat = rs.getDouble("difference_fat");
+            }
+        } catch (SQLException se) {
+            System.out.println("SQL 예외 : " + se);
+        }
+
+        return differenceFat;
+    }
+
+    public double changeMuscleMass() {
+        String query = """
+                    SELECT SUM(ABS(muscle_mass_after - muscle_mass_before)) AS difference_mass 
+                    FROM statistics
+                """;
+        double differenceMuscle = 0.0;
+
+        try (PreparedStatement pstmt = conn.prepareStatement(query); // try-catch-resource -> 자원 자동 닫기
+            ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                differenceMuscle = rs.getDouble("difference_mass");
+            }
+        } catch (SQLException se) {
+            System.out.println("SQL 예외 : " + se);
+        }
+
+        return differenceMuscle;
+    }
 
     public static void main(String[] args) {
         JdbcStatistics jdbcStat = new JdbcStatistics();

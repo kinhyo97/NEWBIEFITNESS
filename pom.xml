@@ -25,6 +25,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.mariadb.jdbc</groupId>
+      <artifactId>mariadb-java-client</artifactId>
+      <version>3.3.2</version>
+    </dependency>
+    <dependency>
       <groupId>org.jfree</groupId>
       <artifactId>jfreechart</artifactId>
       <version>1.5.3</version>
@@ -34,10 +39,7 @@
       <artifactId>jcommon</artifactId>
       <version>1.0.23</version>
     </dependency>
-    <dependency>
-      <groupId>org.mariadb.jdbc</groupId>
-      <artifactId>mariadb-java-client</artifactId>
-      <version>3.5.3</version>
-    </dependency>
+
+
   </dependencies>
 </project>

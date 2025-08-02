@@ -3,7 +3,7 @@ package org.example.component;
 import javax.swing.*;
 import java.awt.*;
 
-class RoundedPanel1 extends JPanel {
+public class RoundedPanel1 extends JPanel {
     private int cornerRadius;
 
     public RoundedPanel1(int radius) {
