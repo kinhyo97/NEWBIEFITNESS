@@ -5,6 +5,7 @@ import java.awt.*;
 import java.sql.*;
 import java.util.*;
 import java.util.List;
+import org.example.service.ExerciseService;
 
 public class ExerciseSelectorPopup extends JFrame {
     public ExerciseSelectorPopup(RoutineRowPanel callerPanel) {
@@ -16,7 +17,7 @@ public class ExerciseSelectorPopup extends JFrame {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-        Map<String, List<String>> exerciseMap = fetchExerciseByBodyPart();
+        Map<String, List<String>> exerciseMap = ExerciseService.getExerciseMapByBodyPart();
 
         for (String bodyPart : exerciseMap.keySet()) {
             JButton partButton = new JButton(bodyPart);
