@@ -7,7 +7,8 @@ import java.awt.geom.RoundRectangle2D;
 import java.util.Map;
 
 import org.example.component.*;
-import org.example.db.JdbcStatistics;
+import org.example.service.StatisticsService;
+import org.example.service.StatisticsService;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -21,7 +22,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 public class StatisticsPanelController {
     
     // 데이터 불러오는 static 변수들
-    static JdbcStatistics jdbc = new JdbcStatistics();
+    static StatisticsService jdbc = new StatisticsService();
     static Map<String, Integer> weekly = jdbc.fetchWorkoutCountByDay();
 
 
@@ -100,7 +101,7 @@ public class StatisticsPanelController {
         roundedBodyInfoPanel.setBackground(Color.BLACK);
         roundedBodyInfoPanel.setLayout(new GridBagLayout());  // flowLayout -> 수직 정렬 기준 무조건 상단.
 
-        JdbcStatistics jdbcStat = new JdbcStatistics();
+        StatisticsService jdbcStat = new StatisticsService();
         String[] info = jdbcStat.fetchBodyInfo();
 
         StatBox weightBox = new StatBox("체중(kg)", info[0]);
@@ -209,7 +210,7 @@ public class StatisticsPanelController {
     public static String getTotalAcitivityTimeText(Map<String, Integer> mapDay) {
         int totalActivityTimes = 0;
 
-        JdbcStatistics jdbcTime = new JdbcStatistics();
+        StatisticsService jdbcTime = new StatisticsService();
         Map<String, Integer> dataDayTimeCounts = jdbcTime.fetchWorkoutCountByDay();
 
 
@@ -285,7 +286,7 @@ class WeeklyChartPanel extends JPanel {
         // 데이터셋 생성(요일 및 운동 횟수)
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-        JdbcStatistics jdbcStatWeekDayCounts = new JdbcStatistics();
+        StatisticsService jdbcStatWeekDayCounts = new StatisticsService();
 
         Map<String, Integer> dataDayTimeCounts = jdbcStatWeekDayCounts.fetchWorkoutCountByDay();
 
