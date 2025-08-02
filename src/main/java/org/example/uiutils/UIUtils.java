@@ -79,4 +79,53 @@ public class UIUtils {
     }
 
 
+    public static JPanel createLabeledRow(String labelText, JComponent inputComponent) {
+        JPanel wrapper = new JPanel();
+        wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.Y_AXIS));
+        wrapper.setOpaque(false); // 배경 투명하게
+        wrapper.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0)); // 여백
+
+        JLabel label = new JLabel(labelText);
+        label.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        inputComponent.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        wrapper.add(label);
+        wrapper.add(Box.createVerticalStrut(5));
+        wrapper.add(inputComponent);
+
+        return wrapper;
+    }
+
+    // 📌 좌우 정렬용 (예: 라벨 왼쪽, 입력 오른쪽)
+    public static JPanel createHorizontalLabeledRow(String labelText, JComponent inputComponent) {
+        JPanel wrapper = new JPanel();
+        wrapper.setLayout(new FlowLayout(FlowLayout.LEFT));
+        wrapper.setOpaque(false);
+        wrapper.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+
+        JLabel label = new JLabel(labelText);
+        label.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+
+        wrapper.add(label);
+        wrapper.add(inputComponent);
+
+        return wrapper;
+    }
+
+    public static JPanel createLabelOnlyRow(String text) {
+        JPanel wrapper = new JPanel();
+        wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.Y_AXIS));
+        wrapper.setOpaque(false);
+        wrapper.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));  // 위아래 여백
+
+        JLabel label = new JLabel(text);
+        label.setFont(new Font("맑은 고딕", Font.BOLD, 18));
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);  // 가운데 정렬
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+
+        wrapper.add(label);
+        return wrapper;
+    }
+
 }
