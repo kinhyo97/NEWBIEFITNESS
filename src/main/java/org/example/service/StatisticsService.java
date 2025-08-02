@@ -28,7 +28,7 @@ public class StatisticsService {
         String query = "SELECT id, day_of_week FROM statistics";
 
         try (PreparedStatement pstmt = conn.prepareStatement(query); // try-catch-resource -> 자원 자동 닫기
-            ResultSet rs = pstmt.executeQuery()) {
+             ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
                 String[] row = new String[2];
                 row[0] = rs.getString("id");
@@ -54,12 +54,12 @@ public class StatisticsService {
                 LIMIT 1;
                 """;
         try (PreparedStatement pstmt = conn.prepareStatement(query);
-            ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    info[0] = rs.getString("us.weight_kg");
-                    info[1] = rs.getString("body_fat_after");
-                    info[2] = rs.getString("muscle_mass_after");
-                }
+             ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                info[0] = rs.getString("us.weight_kg");
+                info[1] = rs.getString("body_fat_after");
+                info[2] = rs.getString("muscle_mass_after");
+            }
         } catch (SQLException se) {
             System.out.println("sql 예외 발생 : " + se);
         }
@@ -83,7 +83,7 @@ public class StatisticsService {
                 int activityMinutes = rs.getInt("activity_minutes");
                 mapDay.put(day, activityMinutes);
             }
-        }catch (SQLException se) {
+        } catch (SQLException se) {
             System.out.println("SQL 예외 : " + se);
         }
 
@@ -117,7 +117,7 @@ public class StatisticsService {
         double differenceFat = 0.0;
 
         try (PreparedStatement pstmt = conn.prepareStatement(query);
-            ResultSet rs = pstmt.executeQuery()) {
+             ResultSet rs = pstmt.executeQuery()) {
             if (rs.next()) {
                 differenceFat = rs.getDouble("difference_fat");
             }
@@ -136,7 +136,7 @@ public class StatisticsService {
         double differenceMuscle = 0.0;
 
         try (PreparedStatement pstmt = conn.prepareStatement(query); // try-catch-resource -> 자원 자동 닫기
-            ResultSet rs = pstmt.executeQuery()) {
+             ResultSet rs = pstmt.executeQuery()) {
             if (rs.next()) {
                 differenceMuscle = rs.getDouble("difference_mass");
             }
@@ -146,8 +146,22 @@ public class StatisticsService {
 
         return differenceMuscle;
     }
+    public int percentAccomplish() {
+        String query = """
+                    SELECT goal_achievement_rate 
+                    FROM statistics
+                """;
+        int percentage = 0;
 
-    public static void main(String[] args) {
-        StatisticsService jdbcStat = new StatisticsService();
+        try (PreparedStatement pstmt = conn.prepareStatement(query); // try-catch-resource -> 자원 자동 닫기
+             ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                percentage = rs.getInt("goal_achievement_rate");
+            }
+        } catch (SQLException se) {
+            System.out.println("SQL 예외 : " + se);
+        }
+
+        return percentage;
     }
 }

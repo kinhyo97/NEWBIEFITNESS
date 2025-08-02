@@ -22,15 +22,15 @@ import org.jfree.data.category.DefaultCategoryDataset;
 public class StatisticsPanelController {
     
     // 데이터 불러오는 static 변수들
-    static StatisticsService jdbc = new StatisticsService();
-    static Map<String, Integer> weekly = jdbc.fetchWorkoutCountByDay();
+    static StatisticsService statisticsServiceInfo = new StatisticsService();
+    static Map<String, Integer> weekly = statisticsServiceInfo.fetchWorkoutCountByDay();
 
 
     public static void statistics_show(JPanel panel, App app) {
         panel.removeAll();
         panel.setLayout(new BorderLayout());  // flowLayout 에서 수정
 
-        String[] info = jdbc.fetchBodyInfo();
+        String[] info = statisticsServiceInfo.fetchBodyInfo();
 
         // BorderLayout.NORTH에 들어갈 전체 상단 박스
         JPanel middlePanel = new JPanel();
@@ -73,7 +73,7 @@ public class StatisticsPanelController {
 
         CircularProgressBar progressBar = new CircularProgressBar();
         progressBar.setPreferredSize(new Dimension(300, 300));
-        progressBar.setProgress(95);
+        progressBar.setProgress(statisticsServiceInfo.percentAccomplish());
         circleWrap.add(progressBar, BorderLayout.CENTER);
 
         middlePanel.add(Box.createVerticalStrut(20));
@@ -161,7 +161,7 @@ public class StatisticsPanelController {
         // 총 칼로리 불러오기
 
 
-        JLabel totalCalories = fieldViewText(String.valueOf(jdbc.totalCalories()) + " kcal", 40, Color.BLACK);
+        JLabel totalCalories = fieldViewText(String.valueOf(statisticsServiceInfo.totalCalories()) + " kcal", 40, Color.BLACK);
         box.add(totalCalories);
 
         box.add(Box.createVerticalStrut(20));
@@ -169,10 +169,10 @@ public class StatisticsPanelController {
         box.add(Box.createVerticalStrut(5));
         addLabeledText(box, "체지방률, 근육량 변화 요약", 20, Color.BLACK, 5);
         addLabeledText(box, "(지난 주 대비)", 20, Color.DARK_GRAY, 5);
-        JLabel fatmass = fieldViewText( "체지방률 : " + String.valueOf(jdbc.changeFatMass()) + " % 감소", 30, Color.BLACK);
+        JLabel fatmass = fieldViewText( "체지방률 : " + String.valueOf(statisticsServiceInfo.changeFatMass()) + " % 감소", 30, Color.BLACK);
         box.add(fatmass);
 
-        JLabel muscleMass = fieldViewText("근육량 : " + String.valueOf(jdbc.changeMuscleMass()) + " kg 증가", 30, Color.BLACK);
+        JLabel muscleMass = fieldViewText("근육량 : " + String.valueOf(statisticsServiceInfo.changeMuscleMass()) + " kg 증가", 30, Color.BLACK);
         box.add(muscleMass);
 
         box.add(Box.createVerticalStrut(20));
