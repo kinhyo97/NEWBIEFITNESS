@@ -58,14 +58,30 @@ public class HomePanelController {
             }
         });
 
-        PrettyButton prettyButton2 = new PrettyButton("상태 진단");
-        prettyButton.setBounds(30, 100, 200, 50);
-        prettyButton.addMouseListener(new MouseAdapter() {
+        PrettyButton prettyButton2 = new PrettyButton("체중 입력");
+        prettyButton2.setBounds(30, 100, 200, 50);
+        prettyButton2.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println("운동 시작 버튼 클릭됨!");
-                app.switchCard("ROUTINE");     // 💡 카드 전환!
-                app.routine_show();             // 💡 내용 갱신
+                System.out.println("체중 입력 버튼 클릭됨!");
+             //   app.switchCard("ROUTINE");     // 💡 카드 전환!
+             //   app.routine_show();             // 💡 내용 갱신
+                String weight = JOptionPane.showInputDialog(
+                        prettyButton2,                    // 🔥 여기 고쳤음!!
+                        "체중을 입력하세요 (kg)",
+                        "체중 입력",
+                        JOptionPane.PLAIN_MESSAGE
+                );
+
+                if (weight != null && !weight.trim().isEmpty()) {
+                    System.out.println("입력한 체중: " + weight + "kg");
+                } else {
+                    System.out.println("입력 취소 또는 공백");
+                }
+
+
+
+
             }
         });
 
