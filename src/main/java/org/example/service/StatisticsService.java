@@ -3,12 +3,15 @@ package org.example.service;
 import org.example.db.DatabaseUtil;
 
 import java.sql.*;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
 public class StatisticsService {
 
-    private Connection conn;
+    public Connection conn;
 
     public StatisticsService() {
         try {
@@ -21,7 +24,7 @@ public class StatisticsService {
     public String getUserKey_id() {
         String data = "";
 
-        String query = "SELECT user_key, day_of_week FROM statistics";
+        String query = "SELECT user_key, date FROM statistics";
 
         try (   Connection conn = DatabaseUtil.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query); // try-catch-resource -> 자원 자동 닫기
@@ -54,14 +57,14 @@ public class StatisticsService {
             Connection conn = DatabaseUtil.getConnection();
 
             PreparedStatement pstmt = conn.prepareStatement(query);
-            System.out.println("PreparedStatement 생성 완료");
+//            System.out.println("PreparedStatement 생성 완료");
 
             pstmt.setString(1, userKey);
             pstmt.setString(2, dateStr);
-            System.out.println("파라미터 설정 완료");
+//            System.out.println("파라미터 설정 완료");
 
             ResultSet rs = pstmt.executeQuery();
-            System.out.println("쿼리 실행 성공");
+//            System.out.println("쿼리 실행 성공");
 
             if (rs.next()) {
                 info.put("date", rs.getString("date"));
@@ -82,25 +85,41 @@ public class StatisticsService {
     }
 
 
-    public Map<String, Integer> fetchWorkoutCountByDay() {
+    public Map<String, Integer> fetchWorkoutCountByDay(String dateStr) {
         Map<String, Integer> mapDay = new LinkedHashMap<>();  // LinkedHashMap<> : 입력한 순서대로 Key 보장
+        // 요일까지 나오게 포맷 수정
+        DateTimeFormatter fullFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd(E)", Locale.KOREAN);
+
         // 텍스트 블록 """ """
         String query = """
-                    SELECT day_of_week, activity_minutes
-                    FROM statistics GROUP BY day_of_week 
-                    ORDER BY FIELD(day_of_week, 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat')
-                """;
+            SELECT DATE(date) AS date_str, SUM(activity_minutes) AS activity_minutes
+            FROM statistics
+            WHERE date BETWEEN DATE_SUB(STR_TO_DATE(?, '%Y-%m-%d'), INTERVAL DAYOFWEEK(STR_TO_DATE(?, '%Y-%m-%d')) + 1 DAY)
+                          AND DATE_ADD(STR_TO_DATE(?, '%Y-%m-%d'), INTERVAL 7 - DAYOFWEEK(STR_TO_DATE(?, '%Y-%m-%d')) DAY)
+            GROUP BY date   /* 같은 날짜끼리 묶어서 집계 */
+            ORDER BY date ASC
+        """;
         try (Connection conn = DatabaseUtil.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            ResultSet rs = pstmt.executeQuery()) {
+            PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-            while (rs.next()) {
-                String day = rs.getString("day_of_week");
-                int activityMinutes = rs.getInt("activity_minutes");
-                mapDay.put(day, activityMinutes);
+            
+            for(int i = 1; i <= 4; i++) {  // 일단 여기랑 바로 밑에 for 반복문으로 바꿨는데 i <= 4 조건 검토 필요
+                pstmt.setString(i, dateStr);
+            }
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+
+                while (rs.next()) {
+                    Date sqlDate = rs.getDate("date_str");
+                    LocalDate localDate = sqlDate.toLocalDate();
+
+                    String day = localDate.format(fullFormatter);
+                    int activityMinutes = rs.getInt("activity_minutes");
+                    mapDay.put(day, activityMinutes);
+                }
             }
         } catch (SQLException se) {
-            System.out.println("SQL 예외1 : " + se);
+            System.out.println("운동 시간 SQL 예외 : " + se);
         }
 
         return mapDay;
@@ -137,14 +156,10 @@ public class StatisticsService {
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, userKey);
-            pstmt.setString(2, dateStr);
-            pstmt.setString(3, dateStr);
-            pstmt.setString(4, dateStr);
-            pstmt.setString(5, dateStr);
-            pstmt.setString(6, dateStr);
-
-
-            // ? 갯수만큼 넣어줄 것
+            
+            for(int i = 2; i <= 6; i++) {  // 일단 위랑 여기 for 반복문으로 바꿨는데 i <= 5 조건 검토 필요
+                pstmt.setString(i, dateStr);
+            }
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
@@ -160,16 +175,28 @@ public class StatisticsService {
 
     public double changeFatMass(String userKey, String dateStr) {
         String query = """
-                    SELECT SUM(ABS(body_fat_after - body_fat_before)) AS difference_fat 
+                    SELECT ROUND(AVG(ABS(body_fat_after - body_fat_before)), 2) AS difference_fat 
                     FROM statistics
-                    WHERE user_key = ? AND date = ?
+                    WHERE user_key = ? 
+                    AND date BETWEEN DATE_SUB(STR_TO_DATE(?, '%Y-%m-%d'), INTERVAL WEEKDAY(STR_TO_DATE(?, '%Y-%m-%d')) + 1 DAY)
+                                  AND DATE_ADD(STR_TO_DATE(?, '%Y-%m-%d'), INTERVAL 6 - WEEKDAY(STR_TO_DATE(?, '%Y-%m-%d')) DAY)
+                    ORDER BY date ASC
                 """;
+        // 지난 주 대비 -> 매일 변화하는 양 평균 구해서 저번 주 대비 비교
+        // + sql은 두 개의 그룹 함수를 중첩해서 사용할 수 없음!!
         double differenceFat = 0.0;
 
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, userKey);
+
             pstmt.setString(2, dateStr);
+            pstmt.setString(3, dateStr);
+            pstmt.setString(4, dateStr);
+            pstmt.setString(5, dateStr);
+            pstmt.setString(6, dateStr);
+
+            // ? 갯수만큼 넣어줄 것
 
             try (ResultSet rs = pstmt.executeQuery()) {
 
@@ -186,9 +213,12 @@ public class StatisticsService {
 
     public double changeMuscleMass(String userKey, String dateStr) {
         String query = """
-                    SELECT SUM(ABS(muscle_mass_after - muscle_mass_before)) AS difference_mass 
+                    SELECT ROUND(AVG(ABS(muscle_mass_after - muscle_mass_before)), 2) AS difference_mass 
                     FROM statistics
-                    WHERE user_key = ? AND date = ?
+                    WHERE user_key = ?
+                    AND date BETWEEN DATE_SUB(STR_TO_DATE(?, '%Y-%m-%d'), INTERVAL WEEKDAY(STR_TO_DATE(?, '%Y-%m-%d')) + 1 DAY)
+                                  AND DATE_ADD(STR_TO_DATE(?, '%Y-%m-%d'), INTERVAL 6 - WEEKDAY(STR_TO_DATE(?, '%Y-%m-%d')) DAY)
+                    ORDER BY date ASC
                 """;
         double differenceMuscle = 0.0;
 
@@ -198,6 +228,10 @@ public class StatisticsService {
              PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, userKey);
             pstmt.setString(2, dateStr);
+            pstmt.setString(3, dateStr);
+            pstmt.setString(4, dateStr);
+            pstmt.setString(5, dateStr);
+            pstmt.setString(6, dateStr);
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
@@ -222,6 +256,10 @@ public class StatisticsService {
              PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, userKey);
             pstmt.setString(2, dateStr);
+            pstmt.setString(3, dateStr);
+            pstmt.setString(4, dateStr);
+            pstmt.setString(5, dateStr);
+            pstmt.setString(6, dateStr);
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {

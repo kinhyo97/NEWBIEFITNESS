@@ -9,9 +9,13 @@ import java.awt.geom.RoundRectangle2D;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import org.checkerframework.checker.units.qual.A;
 import org.example.component.*;
 import org.example.service.StatisticsService;
 import org.jfree.chart.ChartFactory;
@@ -22,23 +26,31 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.example.component.MonthCalendarPanel;
 
 public class StatisticsPanelController {
     
     // 데이터 불러오는 static 변수들
     static StatisticsService statisticsServiceInfo = new StatisticsService();
-    static Map<String, Integer> weekly = statisticsServiceInfo.fetchWorkoutCountByDay();
-    static String dayString = LocalDate.now().toString();
+    static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd(E)", Locale.KOREAN);
+    static String dayString = LocalDate.now().format(formatter);
+//    static Map<String, Integer> weekly = statisticsServiceInfo.fetchWorkoutCountByDay(dayString);
     static String userKey = statisticsServiceInfo.getUserKey_id();
-    
-    // 얘는 종합 분석 업데이트 위해서 새로 객체 생성
-    private static JPanel summaryPanelContainer = new JPanel();
-    
 
     public static void statistics_show(JPanel panel, App app) {
         panel.removeAll();
         panel.setLayout(new BorderLayout());  // flowLayout 에서 수정
+
+        JPanel localSummaryPanelContainer = new JPanel();
+
+        JPanel summaryPanelContainer = new JPanel();
+        summaryPanelContainer.setLayout(new BoxLayout(summaryPanelContainer, BoxLayout.Y_AXIS));
+        summaryPanelContainer.add(createSummaryPanel(userKey, dayString));
+
+
+        if (!(summaryPanelContainer.getLayout() instanceof BoxLayout)) {
+            summaryPanelContainer.setLayout(new BoxLayout(summaryPanelContainer, BoxLayout.Y_AXIS));
+        }
+
 
         // 상단에 들어갈 박스
         JPanel middlePanel = new JPanel();
@@ -54,7 +66,10 @@ public class StatisticsPanelController {
         titleLabel.setOpaque(true);
 
         // 날짜 라벨
-        JLabel dateLabel = new JLabel(LocalDate.now().toString(), SwingConstants.CENTER);
+        // (dateLabel 생성 시부터 요일 포맷 포함시키기))
+        
+
+        JLabel dateLabel = new JLabel(LocalDate.now().format(formatter), SwingConstants.CENTER);
         dateLabel.setForeground(Color.WHITE);
         dateLabel.setFont(new Font("Malgun Gothic", Font.PLAIN, 20));
         
@@ -80,8 +95,8 @@ public class StatisticsPanelController {
         circleWrap.add(progressBar, BorderLayout.CENTER);
 
         // 신체 정보 컨테이너에 올림(또..?)
-        summaryPanelContainer.setLayout(new BoxLayout(summaryPanelContainer, BoxLayout.Y_AXIS));
-        summaryPanelContainer.add(createSummaryPanel(userKey, dayString));
+        localSummaryPanelContainer.setLayout(new BoxLayout(localSummaryPanelContainer, BoxLayout.Y_AXIS));
+        localSummaryPanelContainer.add(createSummaryPanel(userKey, dayString));
 
 
         // 캘린터 표시를 위한 익명 클래스 & 날짜 선택 버튼
@@ -98,16 +113,28 @@ public class StatisticsPanelController {
                 calendar.setLayout(new BorderLayout());
                 calendar.setLocation(0, 0);
 
-                MonthCalendarPanel calendarPanel = new MonthCalendarPanel(new Consumer<LocalDate>() {
+                String currentlySelectedStr = dateLabel.getText().replace("선택된 날짜: ", "").trim();
+                LocalDate defaultDate;
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd(E)", Locale.KOREAN);
+                try {
+                    defaultDate = LocalDate.parse(currentlySelectedStr, formatter);
+                } catch (Exception ex) {
+                    defaultDate = LocalDate.now();
+                    String todayStr = defaultDate.format(formatter);
+                    dateLabel.setText("오늘 날짜: " + todayStr);
+                }
+
+                MonthCalendarPanel calendarPanel = new MonthCalendarPanel(defaultDate, new Consumer<LocalDate>() {
                     @Override
                     public void accept(LocalDate selectedDate) {
                         // 달력 닫기
                         calendar.dispose();
-                        String selectedDateStr = selectedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")); //
-                        dateLabel.setText("선택된 날짜: " + selectedDate.toString());
+                        String selectedDateStr = selectedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd(E)", Locale.KOREAN)); //
+                        dateLabel.setText("선택된 날짜: " + selectedDateStr);
                         int rate = statisticsServiceInfo.percentAccomplish(statisticsServiceInfo.getUserKey_id(), selectedDateStr);
                         progressBar.setProgress(rate);
 
+                        System.out.println(selectedDateStr);
 
                         // 신체 정보 패널 갱신
                         bodyInfoContainer.removeAll();  // 기존 컴포넌트 제거
@@ -117,10 +144,10 @@ public class StatisticsPanelController {
                         bodyInfoContainer.repaint();
 
                         // 종합 분석 패널 갱신
-                        summaryPanelContainer.removeAll();
-                        summaryPanelContainer.add(createSummaryPanel(userKey, selectedDateStr));
-                        summaryPanelContainer.revalidate();
-                        summaryPanelContainer.repaint();
+                        localSummaryPanelContainer.removeAll();
+                        localSummaryPanelContainer.add(createSummaryPanel(userKey, selectedDateStr));
+                        localSummaryPanelContainer.revalidate();
+                        localSummaryPanelContainer.repaint();
 
                         // 자동 이동 방지 -> 캘린더 선택 시 밑으로 내려가는 문제 해결을 위해 스크롤 최상단으로 이동
                         SwingUtilities.invokeLater(() -> {
@@ -174,7 +201,7 @@ public class StatisticsPanelController {
         circleWrap.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // 종합 분석 패널
-        middlePanel.add(summaryPanelContainer);
+        middlePanel.add(localSummaryPanelContainer);
         middlePanel.add(Box.createVerticalStrut(20));
 
         panel.add(pageScroll, BorderLayout.CENTER); // 스크롤바
@@ -222,6 +249,8 @@ public class StatisticsPanelController {
     // 종합 분석 감싸는 박스 패널 추가
 
     private static JPanel createSummaryPanel(String userKey, String dayString) {
+        Map<String, Integer> workoutByDay = statisticsServiceInfo.fetchWorkoutCountByDay(dayString);
+
         JPanel wrapper = new JPanel();
         wrapper.setBackground(Color.BLACK);
         wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.Y_AXIS));
@@ -238,13 +267,12 @@ public class StatisticsPanelController {
         addLabeledText(box,"(한 주 기준)", 12, Color.BLACK, 10);
         box.add(Box.createVerticalStrut(10));
 
-        Map<String, Integer> workoutByDay = weekly;  // static 변수
-        String timeText = getTotalAcitivityTimeText(workoutByDay);
+        String timeText = getTotalActivityTimeText(workoutByDay);
 
         JLabel totalLabel = fieldViewText(timeText, 27, Color.BLACK);
         box.add(totalLabel);
 
-        WeeklyChartPanel chartPanel = new WeeklyChartPanel();
+        WeeklyChartPanel chartPanel = new WeeklyChartPanel(dayString);
 
         box.add(Box.createVerticalStrut(10));
         box.add(chartPanel);
@@ -254,7 +282,8 @@ public class StatisticsPanelController {
         addLabeledText(box, "이번 주 총 소모 칼로리", 20, Color.BLACK, 20);
         
         // 총 칼로리 불러오기
-        JLabel totalCalories = fieldViewText(String.valueOf(statisticsServiceInfo.totalCalories(userKey, dayString)) + " kcal", 40, Color.BLACK);
+        int cal = statisticsServiceInfo.totalCalories(userKey, dayString);
+        JLabel totalCalories = fieldViewText( cal + " kcal", 40, Color.BLACK);
         box.add(totalCalories);
 
         box.add(Box.createVerticalStrut(20));
@@ -262,10 +291,13 @@ public class StatisticsPanelController {
         box.add(Box.createVerticalStrut(5));
         addLabeledText(box, "체지방률, 근육량 변화 요약", 20, Color.BLACK, 5);
         addLabeledText(box, "(지난 주 대비)", 20, Color.DARK_GRAY, 5);
-        JLabel fatmass = fieldViewText( "체지방률 : " + String.valueOf(statisticsServiceInfo.changeFatMass(userKey, dayString)) + " % 감소", 30, Color.BLACK);
-        box.add(fatmass);
 
-        JLabel muscleMass = fieldViewText("근육량 : " + String.valueOf(statisticsServiceInfo.changeMuscleMass(userKey, dayString)) + " kg 증가", 30, Color.BLACK);
+        double fatPer = statisticsServiceInfo.changeFatMass(userKey, dayString);
+        JLabel fatMass = fieldViewText( "체지방률 : " + fatPer + " % 감소", 30, Color.BLACK);
+        box.add(fatMass);
+
+        double musclePer = statisticsServiceInfo.changeMuscleMass(userKey, dayString);
+        JLabel muscleMass = fieldViewText("근육량 : " + musclePer + " kg 증가", 30, Color.BLACK);
         box.add(muscleMass);
 
         box.add(Box.createVerticalStrut(20));
@@ -301,13 +333,10 @@ public class StatisticsPanelController {
         return label;
     }
 
-    public static String getTotalAcitivityTimeText(Map<String, Integer> mapDay) {
+    public static String getTotalActivityTimeText(Map<String, Integer> mapDay) {
         int totalActivityTimes = 0;
 
-        Map<String, Integer> dataDayTimeCounts = statisticsServiceInfo.fetchWorkoutCountByDay();
-
-
-        for (Map.Entry<String, Integer> entry : dataDayTimeCounts.entrySet()) {
+        for (Map.Entry<String, Integer> entry : mapDay.entrySet()) {
             totalActivityTimes += entry.getValue();
         }
 
@@ -372,27 +401,32 @@ class StatBox extends JPanel {
 class WeeklyChartPanel extends JPanel {
     StatisticsService jdbcStatWeekDayCounts = new StatisticsService();
 
-    public WeeklyChartPanel() {
+    public WeeklyChartPanel(String dateStr) {
         setLayout(new BorderLayout());
 
-        String[] days = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
-        String[] daysKorean = {"일", "월", "화", "수", "목", "금", "토"};
 
         // 데이터셋 생성(요일 및 운동 횟수)
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-        Map<String, Integer> dataDayTimeCounts = jdbcStatWeekDayCounts.fetchWorkoutCountByDay();
+        Map<String, Integer> dataDayTimeCounts = jdbcStatWeekDayCounts.fetchWorkoutCountByDay(dateStr);
 
-        for (int i = 0; i < days.length; i++) {
-            int count = dataDayTimeCounts.getOrDefault(days[i], 0);
-            dataset.addValue(count, "운동 시간", daysKorean[i]);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd(E)", Locale.KOREAN);
+        DateTimeFormatter labelFormat = DateTimeFormatter.ofPattern("M/d");  // X축 레이블
+
+        for (String d : getWeekDates(dateStr)) {
+            LocalDate ld = LocalDate.parse(d, formatter);
+            String label = ld.format(labelFormat);
+
+            int count = dataDayTimeCounts.getOrDefault(d, 0);
+
+            dataset.addValue(count, "운동 시간", label);
         }
 
         // 꺾은선 차트
         JFreeChart lineChart = ChartFactory.createLineChart(
-                "요일별 운동 시간",
-                "요일",  // X축 레이블
-                "활동 시간",  // Y축 레이블
+                "날짜별 운동 시간",
+                "날짜",  // X축 레이블
+                "활동 시간(분)",  // Y축 레이블
                 dataset,  // 그래프에 들어갈 데이터셋
                 PlotOrientation.VERTICAL,  // 차트 방향 (세로 꺾은선)
                 false, // 범례 표시 여부
@@ -427,6 +461,20 @@ class WeeklyChartPanel extends JPanel {
 
         add(chartPn, BorderLayout.CENTER);
     }
+
+    public static ArrayList<String> getWeekDates(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd(E)", Locale.KOREAN);
+        LocalDate baseDate = LocalDate.parse(date, formatter);
+
+        // 해당 주의 월요일 구하기
+        LocalDate startOfWeek = baseDate.minusDays(baseDate.getDayOfWeek().getValue() % 7);
+
+        ArrayList<String> weekDates = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            weekDates.add(startOfWeek.plusDays(i).format(formatter));
+        }
+        return weekDates;
+    }
 }
 
 
@@ -450,5 +498,165 @@ class LineSetting extends JPanel {
         super.paintComponent(g);
         g.setColor(getBackground());
         g.drawLine(0, 0 ,getWidth() - 1, 0);  // 수평 직선
+    }
+}
+
+class MonthCalendarPanel extends JPanel {
+    private final Color sundayColor = new Color(255, 80, 80);
+    private final Color saturdayColor = new Color(80, 80, 255);
+    private final Color todayBg = new Color(255, 200, 200);
+    private final Color selectedBg = new Color(255, 170, 0);
+
+    private LocalDate selectedDate = null;
+    private Consumer<LocalDate> onDateSelected;
+    private LocalDate today = LocalDate.now();
+    private YearMonth currentYearMonth = YearMonth.from(today);
+
+    private JPanel calendarGrid;
+    private JComboBox<Integer> yearCombo;
+    private JComboBox<Integer> monthCombo;
+
+    public MonthCalendarPanel(Consumer<LocalDate> onDateSelected) {
+        this.onDateSelected = onDateSelected;
+        setLayout(new BorderLayout());
+        setBackground(Color.WHITE);
+
+
+        // 상단: 연도 & 월 선택
+        JPanel header = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        header.setBackground(Color.WHITE);
+
+        yearCombo = new JComboBox<>();
+        for (int y = today.getYear() - 5; y <= today.getYear() + 5; y++) {
+            yearCombo.addItem(y);
+        }
+        yearCombo.setSelectedItem(currentYearMonth.getYear());
+
+        monthCombo = new JComboBox<>();
+        for (int m = 1; m <= 12; m++) {
+            monthCombo.addItem(m);
+        }
+        monthCombo.setSelectedItem(currentYearMonth.getMonthValue());
+
+        yearCombo.addActionListener(e -> updateFromCombo());
+        monthCombo.addActionListener(e -> updateFromCombo());
+
+        header.add(new JLabel("YEAR"));
+        header.add(yearCombo);
+        header.add(Box.createHorizontalStrut(10));
+        header.add(new JLabel("MONTH"));
+        header.add(monthCombo);
+
+        add(header, BorderLayout.NORTH);
+
+        // 달력 그리드
+        calendarGrid = new JPanel(new GridLayout(0, 7));
+        calendarGrid.setBackground(Color.WHITE);
+        add(calendarGrid, BorderLayout.CENTER);
+
+        updateCalendar();
+    }
+    public MonthCalendarPanel(LocalDate defaultDate, Consumer<LocalDate> onDateSelected) {
+        this.onDateSelected = onDateSelected;
+        this.selectedDate = defaultDate;
+        this.currentYearMonth = YearMonth.from(defaultDate);
+
+        setLayout(new BorderLayout());
+        setBackground(Color.WHITE);
+
+        initHeader();
+        updateCalendar();
+    }
+
+
+    private void updateFromCombo() {
+        int selectedYear = (int) yearCombo.getSelectedItem();
+        int selectedMonth = (int) monthCombo.getSelectedItem();
+        currentYearMonth = YearMonth.of(selectedYear, selectedMonth);
+        updateCalendar();
+    }
+
+    public LocalDate getSelectedDate() {
+        return selectedDate;
+    }
+
+    private void initHeader() {
+        JPanel header = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        header.setBackground(Color.WHITE);
+
+        yearCombo = new JComboBox<>();
+        for (int y = today.getYear() - 5; y <= today.getYear() + 5; y++) {
+            yearCombo.addItem(y);
+        }
+        yearCombo.setSelectedItem(currentYearMonth.getYear());
+
+        monthCombo = new JComboBox<>();
+        for (int m = 1; m <= 12; m++) {
+            monthCombo.addItem(m);
+        }
+        monthCombo.setSelectedItem(currentYearMonth.getMonthValue());
+
+        yearCombo.addActionListener(e -> updateFromCombo());
+        monthCombo.addActionListener(e -> updateFromCombo());
+
+        header.add(new JLabel("YEAR"));
+        header.add(yearCombo);
+        header.add(Box.createHorizontalStrut(10));
+        header.add(new JLabel("MONTH"));
+        header.add(monthCombo);
+
+        add(header, BorderLayout.NORTH);
+
+        calendarGrid = new JPanel(new GridLayout(0, 7));
+        calendarGrid.setBackground(Color.WHITE);
+        add(calendarGrid, BorderLayout.CENTER);
+    }
+
+
+    private void updateCalendar() {
+        calendarGrid.removeAll();
+
+        // 요일 헤더
+        String[] days = {"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
+        for (int i = 0; i < 7; i++) {
+            JLabel dayLabel = new JLabel(days[i], SwingConstants.CENTER);
+            dayLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+            dayLabel.setForeground(i == 0 ? sundayColor : (i == 6 ? saturdayColor : Color.BLACK));
+            calendarGrid.add(dayLabel);
+        }
+
+        // 시작 요일 전 빈 칸
+        int firstDayOfWeek = currentYearMonth.atDay(1).getDayOfWeek().getValue() % 7;
+        for (int i = 0; i < firstDayOfWeek; i++) {
+            calendarGrid.add(new JLabel(""));
+        }
+
+        // 날짜 버튼
+        for (int day = 1; day <= currentYearMonth.lengthOfMonth(); day++) {
+            LocalDate date = currentYearMonth.atDay(day);
+            JButton dayBtn = new JButton(String.valueOf(day));
+            dayBtn.setFocusPainted(false);
+            dayBtn.setContentAreaFilled(false);
+            dayBtn.setBorderPainted(false);
+            dayBtn.setOpaque(true);
+            dayBtn.setBackground(Color.WHITE);
+
+            dayBtn.setForeground(date.getDayOfWeek().getValue() % 7 == 0 ? sundayColor :
+                    date.getDayOfWeek().getValue() % 7 == 6 ? saturdayColor : Color.BLACK);
+
+            if (date.equals(today)) dayBtn.setBackground(todayBg);
+            if (date.equals(selectedDate)) dayBtn.setBackground(selectedBg);
+
+            dayBtn.addActionListener(e -> {
+                selectedDate = date;
+                if (onDateSelected != null) onDateSelected.accept(selectedDate);
+                updateCalendar(); // 선택된 날짜 강조 위해 다시 그림
+            });
+
+            calendarGrid.add(dayBtn);
+        }
+
+        revalidate();
+        repaint();
     }
 }
