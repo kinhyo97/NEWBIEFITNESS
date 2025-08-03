@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.*;
 import javax.imageio.ImageIO;
+
+import org.example.db.DatabaseUtil;
 import org.example.loginPage;
 
 import org.example.HomePanelController;
@@ -82,7 +84,9 @@ public class App extends JFrame {
         add(createCenterPanel(), BorderLayout.CENTER);
 
         System.out.println("현재 로그인 유저 : "+userKey +" user_id : "+user_id);
-        home_show();
+        //new SurveyPage();
+        //home_show();
+
         setVisible(true);
 
     }
@@ -202,6 +206,7 @@ public class App extends JFrame {
         TipPanelController.tip_show(tipPanel,this);
     }
 
+
     // ✅ 카드 전환 함수 (새로 추가!)
     public void switchCard(String name) {
         cardLayout.show(centerPanel, name);
@@ -219,6 +224,25 @@ public class App extends JFrame {
         return rounded;
     }
 
+
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new loginPage(() -> {
+                // 로그인 성공 시 SurveyPage 실행
+                new SurveyPage(() -> {
+                    // 설문 완료 후 App 실행
+                    try {
+                        new App();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            });
+        });
+    }
+
+/*원래꺼
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             new loginPage(() -> {
@@ -230,6 +254,14 @@ public class App extends JFrame {
             });
         });
     }
+
+    */
+
+
+
+
+
+
 
 
 

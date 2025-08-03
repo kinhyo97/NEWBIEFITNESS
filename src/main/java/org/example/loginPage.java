@@ -103,8 +103,33 @@ public class loginPage extends JFrame {
                         App.user_name = rs.getString("name");
                         System.out.println("🔑 로그인한 유저 키: " + App.userKey);
 
+
+                        try (PreparedStatement checkStmt = conn.prepareStatement(
+                                "SELECT survey_completed FROM user WHERE user_key = ?")) {
+
+                            checkStmt.setString(1, App.userKey);
+                            try (ResultSet checkRs = checkStmt.executeQuery()) {
+                                if (checkRs.next()) {
+                                    boolean done = checkRs.getBoolean("survey_completed");
+
+                                    dispose(); // 로그인 창 닫기
+
+                                    if (done) {
+                                        new App().home_show(); // 설문 완료 → 바로 홈
+                                    } else {
+                                        new SurveyPage(() -> new App().home_show()); // 설문 먼저
+                                    }
+                                }
+                            }
+                        }
+
+
+
+                        /*
                         dispose();            // 로그인 창 닫기
                         onLoginSuccess.run(); // App 실행
+                        원래코드
+                         */
                     } else {
                         JOptionPane.showMessageDialog(this, "아이디 또는 비밀번호가 틀렸습니다.");
                     }
