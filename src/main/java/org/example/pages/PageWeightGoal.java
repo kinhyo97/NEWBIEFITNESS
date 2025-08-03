@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PageWeightGoal extends JPanel {
+    private RoundTextField1 goalField;
     public PageWeightGoal() {
         setBackground(Color.WHITE);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -85,7 +86,7 @@ public class PageWeightGoal extends JPanel {
         goalFieldPanel.setBackground(Color.WHITE);
         goalFieldPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        RoundTextField1 goalField = new RoundTextField1(30);
+        goalField = new RoundTextField1(30);
         goalField.setMaximumSize(fieldSize);
         goalField.setHorizontalAlignment(JTextField.RIGHT);
 
@@ -105,4 +106,13 @@ public class PageWeightGoal extends JPanel {
         gridPanel.add(goalWrapper);
         add(gridPanel);
     }
+
+    public float getGoalWeight() {
+        try {
+            return Float.parseFloat(goalField.getText());
+        } catch (NumberFormatException e) {
+            return -1f; // 잘못된 값 처리
+        }
+    }
+
 }

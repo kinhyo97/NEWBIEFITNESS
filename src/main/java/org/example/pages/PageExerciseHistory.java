@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import org.example.UIUtils;
 import org.example.component.PinkSlider;
+import org.example.component.RoundSelectButton;
 
 public class PageExerciseHistory extends JPanel {
     public PageExerciseHistory() {
@@ -42,11 +43,41 @@ public class PageExerciseHistory extends JPanel {
         JSlider ageslider = new PinkSlider(0, 250, 50); // 예시: 0~100 범위, 초기 50
         ageslider.setMajorTickSpacing(30);
         ageslider.setPaintTicks(true);
+        ageslider.setAlignmentX(Component.LEFT_ALIGNMENT);
         add(ageslider);
         ageslider.addChangeListener(e -> {
             int newValue = ageslider.getValue();
             ageLabel.setText(newValue + "cm");
         });
         ageLabel.setText(ageslider.getValue() + "cm");
+
+        add(Box.createVerticalStrut(15));
+        JPanel title2 = UIUtils.createLabelOnlyRow("운동 경력은 어떻게 되시나요?");
+        add(title2);
+        add(Box.createVerticalStrut(15));
+
+
+
+
+
+        RoundSelectButton selectButtonbtn = new RoundSelectButton("0~6개월");
+        RoundSelectButton selectButtonbtn2 = new RoundSelectButton("6~12개월");
+        RoundSelectButton selectButtonbtn3 = new RoundSelectButton("12~18개월");
+        RoundSelectButton selectButtonbtn4 = new RoundSelectButton("18개월 이상");
+        add(selectButtonbtn4);
+
+        ButtonGroup group = new ButtonGroup();
+        group.add(selectButtonbtn);
+        group.add(selectButtonbtn2);
+        group.add(selectButtonbtn3);
+        group.add(selectButtonbtn4);
+
+        add(Box.createVerticalStrut(15));
+        add(selectButtonbtn);
+        add(Box.createVerticalStrut(15));
+        add(selectButtonbtn2);
+        add(Box.createVerticalStrut(15));
+        add(selectButtonbtn3);
+        add(Box.createVerticalStrut(15));
     }
 }

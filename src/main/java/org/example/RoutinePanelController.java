@@ -338,6 +338,4 @@ public class RoutinePanelController {
         }
         return records;
     }
-
-
 }
