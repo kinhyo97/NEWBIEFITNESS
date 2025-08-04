@@ -10,6 +10,8 @@ import java.awt.*;
 public class PageMealFrequency extends JPanel {
 
     private JLabel selectedGenderIcon = null;
+    private RoundTextField1 ageField;
+    private RoundTextField1 nameField;
 
     public PageMealFrequency() {
         setBackground(Color.WHITE);
@@ -133,7 +135,7 @@ public class PageMealFrequency extends JPanel {
         ageFieldPanel.setBackground(Color.WHITE);
         ageFieldPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        RoundTextField1 ageField = new RoundTextField1(30);
+        ageField = new RoundTextField1(30);
         ageField.setMaximumSize(new Dimension(200, 30));
         ageField.setHorizontalAlignment(JTextField.RIGHT);
 
@@ -148,12 +150,74 @@ public class PageMealFrequency extends JPanel {
         ageWrapper.add(ageLabel);
         ageWrapper.add(Box.createVerticalStrut(5));
         ageWrapper.add(ageFieldPanel);
+        ageWrapper.add(Box.createVerticalStrut(5));
+
+
+        JPanel nameWrapper = new JPanel();
+        nameWrapper.setLayout(new BoxLayout(nameWrapper, BoxLayout.Y_AXIS));
+        nameWrapper.setBackground(Color.WHITE);
+        nameWrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+// 🔹 "이름" 라벨
+        JLabel nameLabel = new JLabel("이름");
+        nameLabel.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+        nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        nameLabel.setPreferredSize(new Dimension(200, 20));
+
+// 🔹 텍스트필드
+        JPanel nameFieldPanel = new JPanel();
+        nameFieldPanel.setLayout(new BoxLayout(nameFieldPanel, BoxLayout.X_AXIS));
+        nameFieldPanel.setBackground(Color.WHITE);
+        nameFieldPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        nameField = new RoundTextField1(30);
+        nameField.setMaximumSize(new Dimension(200, 30));
+        nameField.setHorizontalAlignment(JTextField.LEFT);
+
+// 🔹 조립
+        nameFieldPanel.add(nameField);
+
+        nameWrapper.add(nameLabel);
+        nameWrapper.add(Box.createVerticalStrut(5));
+        nameWrapper.add(nameFieldPanel);
+
+
+
+
+
+
+
 
 // 🔹 전체에 추가
         add(Box.createVerticalStrut(30)); // 기존 체중 입력 필드와의 간격
         add(ageWrapper);
-
+        add(nameWrapper);
 
 
     }
+
+    public String getSelectedGender() {
+        if (selectedGenderIcon == null) return null;
+        if (selectedGenderIcon.getBorder().equals(BorderFactory.createLineBorder(Color.PINK, 3))) {
+            return "FEMALE";
+        } else if (selectedGenderIcon.getBorder().equals(BorderFactory.createLineBorder(Color.BLUE, 3))) {
+            return "MALE";
+        }
+        return null;
+    }
+
+    public int getAge() {
+        try {
+            return Integer.parseInt(ageField.getText().trim());
+        } catch (NumberFormatException e) {
+            return -1; // 유효하지 않으면 -1 반환
+        }
+    }
+
+    public String getName() {
+        return nameField.getText().trim();
+    }
+
+
+
 }

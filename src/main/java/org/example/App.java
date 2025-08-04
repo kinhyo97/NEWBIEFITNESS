@@ -8,17 +8,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.sql.*;
 import javax.imageio.ImageIO;
-
-import org.example.db.DatabaseUtil;
-import org.example.loginPage;
-
-import org.example.HomePanelController;
-import org.example.RoutinePanelController;
-import org.example.StatisticsPanelController;
-import org.example.DietPanelController;
-import org.example.TipPanelController;
 
 public class App extends JFrame {
     //쿼리설정
@@ -30,6 +20,8 @@ public class App extends JFrame {
     public static String userKey = null;
     public static String user_id = null;
     public static String user_name = null;
+    private JLabel logoLabel;
+    private JLabel profilePic;
     //쿼리사용 예시
     /*
     try {
@@ -98,7 +90,26 @@ public class App extends JFrame {
 
         ImageIcon logoIcon = new ImageIcon("src/icons/newbiehealthlogo.png");
         Image scaledLogo = logoIcon.getImage().getScaledInstance(120, 40, Image.SCALE_SMOOTH);
-        JLabel logoLabel = new JLabel(new ImageIcon(scaledLogo));
+        logoLabel = new JLabel(new ImageIcon(scaledLogo));
+        logoLabel.setOpaque(true);  // 배경색 설정해서 시각 확인
+        logoLabel.setBackground(Color.RED);
+
+// 이벤트 리스너도 이 logoLabel에 붙이기
+        logoLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        logoLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                showProfilePictureDialog(); // ✅ this.logoLabel 접근 가능
+            }
+        });
+
+
+
+
+
+
+
+
 
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
         leftPanel.setBackground(Color.BLACK);
@@ -111,14 +122,36 @@ public class App extends JFrame {
         welcomeLabel.setForeground(Color.WHITE);
         welcomeLabel.setFont(new Font("Malgun Gothic", Font.PLAIN, 14));
 
-        JLabel profilePic = new JLabel();
+        profilePic = new JLabel();
+        BufferedImage profileImage;
         try {
-            BufferedImage profileImage = ImageIO.read(new File("src/user_profile/"+userKey+".png"));
+            File profileFile = new File("src/user_profile/" + userKey + ".png");
+
+            // ❗ 없으면 default 이미지로 대체
+            if (!profileFile.exists()) {
+                profileFile = new File("src/user_profile/default.png");
+            }
+
+            profileImage = ImageIO.read(profileFile);
             Image roundedProfile = makeRoundedProfile(profileImage, 40);
             profilePic.setIcon(new ImageIcon(roundedProfile));
+
         } catch (IOException e) {
             System.out.println("⚠ 프로필 이미지 로딩 실패: " + e.getMessage());
+            // 실패해도 기본값 표시 (회색 원 등)
+            profilePic.setIcon(new ImageIcon(new BufferedImage(40, 40, BufferedImage.TYPE_INT_ARGB)));
         }
+
+        profilePic.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        profilePic.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                showProfilePictureDialog();
+            }
+        });
+
+
+
 
         rightPanel.add(welcomeLabel);
         rightPanel.add(profilePic);
@@ -223,6 +256,45 @@ public class App extends JFrame {
         g2.dispose();
         return rounded;
     }
+
+    private void showProfilePictureDialog() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("프로필 사진 선택");
+
+        int result = fileChooser.showOpenDialog(null);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            String imagePath = selectedFile.getAbsolutePath();
+
+            // 저장할 위치 지정 (userKey 기반 이름으로)
+            File destFile = new File("src/user_profile/" + userKey + ".png");
+
+            try {
+                // 기존 파일이 있다면 삭제
+                if (destFile.exists()) {
+                    destFile.delete();
+                }
+
+                // 선택된 이미지를 PNG로 복사 저장
+                BufferedImage img = ImageIO.read(selectedFile);
+                ImageIO.write(img, "png", destFile);
+
+                // UI에 프로필 이미지 적용 (동그랗게)
+                Image roundedProfile = makeRoundedProfile(img, 40);
+                profilePic.setIcon(new ImageIcon(roundedProfile));
+
+                System.out.println("✅ 프로필 사진 저장 완료: " + destFile.getAbsolutePath());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "이미지 저장 실패: " + e.getMessage());
+            }
+        }
+    }
+
+
+
+
 
 
 

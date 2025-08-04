@@ -21,6 +21,29 @@ public class SurveyPage extends JFrame {
     private JButton nextButton;
     private JButton endButton;
 
+
+
+    //설문결과 저장변수
+    private float surveyGoalWeight;
+    private String surveyGender;
+    private int surveyAge;
+    private String surveyName;
+    private int surveyHeight;
+    private String surveyExperience;
+    private String surveyLocation = null;
+    private String surveyTime = null;
+    private String surveyWorkoutDays;
+    private String surveyMealFrequency;
+    private String surveyDietType;
+    private int surveyTargetCalories;
+
+
+
+
+
+
+
+
     private final List<FadePanel> surveyPages = List.of(
             new FadePanel(new PageWeightGoal()),
             new FadePanel(new PageMealFrequency()),
@@ -79,9 +102,9 @@ public class SurveyPage extends JFrame {
         endButton.setPreferredSize(new Dimension(400, 40));
         endButton.addActionListener(e ->{
                 dispose(); // 현재 SurveyPage 창 닫기
-                saveGoalWeightOnly();
-                updateSurveyCompleted();
-                saveSurveyResult();
+                collectSurveyAnswers();
+                saveFullSurveyResult();
+                updateSurveyCompleted(); // SurveyComplete 값 1로 변경
                 new App().home_show();
 
         });
@@ -128,25 +151,6 @@ public class SurveyPage extends JFrame {
             cardLayout.show(cardPanel, String.valueOf(currentPage));
             page.startFadeIn();
             progressBar.setValue(currentPage);
-        }
-    }
-
-    private void saveSurveyResult() {
-        String sql = "INSERT INTO survey_result (user_key, question_id, answer, created_at) VALUES (?, ?, ?, NOW())";
-
-        try (Connection conn = DatabaseUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            // 예시로 하나만 넣는 경우 (반복문으로 여러 개 넣어도 됨)
-            pstmt.setString(1, App.userKey);       // 사용자 키
-            pstmt.setString(2, "Q001");            // 질문 ID
-            pstmt.setString(3, "다이어트");        // 답변 내용
-
-            pstmt.executeUpdate();
-            System.out.println("✅ 설문 결과 저장 완료");
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -204,6 +208,98 @@ public class SurveyPage extends JFrame {
             e.printStackTrace();
         }
     }
+
+
+    private void collectSurveyAnswers() {
+        for (FadePanel panel : surveyPages) {
+            Component page = panel.getComponent(0);
+
+            if (page instanceof PageWeightGoal pwg) {
+                surveyGoalWeight = pwg.getGoalWeight();
+
+            } else if (page instanceof PageMealFrequency pmf) {
+                surveyGender = pmf.getSelectedGender();
+                surveyAge = pmf.getAge();
+                surveyName = pmf.getName();
+            }else if (page instanceof PageExerciseHistory pei) {
+                surveyHeight = pei.getUserHeight();
+                surveyExperience = pei.getExerciseExperience();
+            }else if (page instanceof PageExerciseInfo pei) {
+                surveyLocation = pei.getExerciseLocation();
+                surveyTime = pei.getExerciseTime();
+            }else if (page instanceof PageWorkoutDays pwd) {
+                surveyWorkoutDays = String.join(",", pwd.getSelectedDays());
+            }else if (page instanceof PageFoodHabit pfh) {
+                surveyMealFrequency = pfh.getMealFrequency();
+                surveyDietType = pfh.getDietType();
+            }else if (page instanceof PageTargetCalories ptc) {
+                surveyTargetCalories = ptc.getTargetCalories();
+            }
+        }
+
+        // 👉 디버깅용 출력
+        System.out.println("📌 목표 체중: " + surveyGoalWeight);
+        System.out.println("📌 성별: " + surveyGender);
+        System.out.println("📌 나이: " + surveyAge);
+        System.out.println("📌 이름: " + surveyName);
+        System.out.println("📌 키: " + surveyHeight);
+        System.out.println("📌 운동 경력: " + surveyExperience);
+        System.out.println("📌운 동 장소: " + surveyLocation);
+        System.out.println("📌운 동 시간: " + surveyTime);
+        System.out.println("📌 운동 요일: " + surveyWorkoutDays);
+        System.out.println("📌 식사 빈도: " + surveyMealFrequency);
+        System.out.println("📌 식단 제한: " + surveyDietType);
+        System.out.println("📌 목표 칼로리: " + surveyTargetCalories);
+    }
+
+    private void saveFullSurveyResult() {
+        String sql = """
+        INSERT INTO user_survey (
+            user_key, goal_weight, gender, age, name, height, experience,
+            location, time, workout_days, meal_frequency, diet_type, target_calories
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+            goal_weight = VALUES(goal_weight),
+            gender = VALUES(gender),
+            age = VALUES(age),
+            name = VALUES(name),
+            height = VALUES(height),
+            experience = VALUES(experience),
+            location = VALUES(location),
+            time = VALUES(time),
+            workout_days = VALUES(workout_days),
+            meal_frequency = VALUES(meal_frequency),
+            diet_type = VALUES(diet_type),
+            target_calories = VALUES(target_calories)
+        """;
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, App.userKey);
+            pstmt.setFloat(2, surveyGoalWeight);
+            pstmt.setString(3, surveyGender);
+            pstmt.setInt(4, surveyAge);
+            pstmt.setString(5, surveyName);
+            pstmt.setInt(6, surveyHeight);
+            pstmt.setString(7, surveyExperience);
+            pstmt.setString(8, surveyLocation);
+            pstmt.setString(9, surveyTime);
+            pstmt.setString(10, surveyWorkoutDays);
+            pstmt.setString(11, surveyMealFrequency);
+            pstmt.setString(12, surveyDietType);
+            pstmt.setInt(13, surveyTargetCalories);
+
+            pstmt.executeUpdate();
+            System.out.println("✅ 전체 설문 결과 저장 완료");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
 
 

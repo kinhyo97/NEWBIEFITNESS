@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PageWeightGoal extends JPanel {
-    private RoundTextField1 goalField;
+    private RoundTextField1 goalWeightField;
     public PageWeightGoal() {
         setBackground(Color.WHITE);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -86,15 +86,15 @@ public class PageWeightGoal extends JPanel {
         goalFieldPanel.setBackground(Color.WHITE);
         goalFieldPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        goalField = new RoundTextField1(30);
-        goalField.setMaximumSize(fieldSize);
-        goalField.setHorizontalAlignment(JTextField.RIGHT);
+        goalWeightField = new RoundTextField1(30);
+        goalWeightField.setMaximumSize(fieldSize);
+        goalWeightField.setHorizontalAlignment(JTextField.RIGHT);
 
         JLabel goalKg = new JLabel("kg");
         goalKg.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
         goalKg.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
 
-        goalFieldPanel.add(goalField);
+        goalFieldPanel.add(goalWeightField);
         goalFieldPanel.add(goalKg);
 
         goalWrapper.add(goalLabel);
@@ -107,12 +107,16 @@ public class PageWeightGoal extends JPanel {
         add(gridPanel);
     }
 
+
     public float getGoalWeight() {
         try {
-            return Float.parseFloat(goalField.getText());
+            return Float.parseFloat(goalWeightField.getText().trim());
         } catch (NumberFormatException e) {
-            return -1f; // 잘못된 값 처리
+            return -1f; // 또는 0f로 처리해도 OK. 유효하지 않은 입력 처리
         }
     }
+
+
+
 
 }

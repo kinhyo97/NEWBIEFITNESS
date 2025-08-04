@@ -22,6 +22,8 @@ public class ExerciseSelectorPopup extends JFrame {
         for (String bodyPart : exerciseMap.keySet()) {
             JButton partButton = new JButton(bodyPart);
             partButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+            partButton.setMaximumSize(new Dimension(300, 40)); // ✅ 크기 고정
+            partButton.setPreferredSize(new Dimension(300, 40)); // (옵션)
             partButton.addActionListener(e -> {
                 showExerciseSelection(exerciseMap.get(bodyPart), callerPanel);
                 dispose();
@@ -38,12 +40,14 @@ public class ExerciseSelectorPopup extends JFrame {
 
     private void showExerciseSelection(List<String> exercises, RoutineRowPanel callerPanel) {
         JFrame subFrame = new JFrame("운동 선택");
-        subFrame.setSize(300, 400);
+        subFrame.setSize(600, 800);
         subFrame.setLocationRelativeTo(null);
-        subFrame.setLayout(new GridLayout(0, 1));
+        subFrame.setLayout(new GridLayout(0, 2));
 
         for (String ex : exercises) {
             JButton btn = new JButton(ex);
+            btn.setPreferredSize(new Dimension(300, 45));      // ✅ 크기 설정
+            btn.setMaximumSize(new Dimension(300, 45));
             btn.addActionListener(e -> {
                 callerPanel.setExerciseName(ex);
                 subFrame.dispose();
