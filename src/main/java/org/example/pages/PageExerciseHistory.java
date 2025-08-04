@@ -7,6 +7,10 @@ import org.example.component.PinkSlider;
 import org.example.component.RoundSelectButton;
 
 public class PageExerciseHistory extends JPanel {
+
+    private PinkSlider heightSlider;
+    private RoundSelectButton selectedExperience;
+
     public PageExerciseHistory() {
         setBackground(Color.WHITE);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -40,16 +44,16 @@ public class PageExerciseHistory extends JPanel {
         ageLabel.setFont(new Font("맑은 고딕", Font.BOLD, 18));
         add(ageLabel);
 
-        JSlider ageslider = new PinkSlider(0, 250, 50); // 예시: 0~100 범위, 초기 50
-        ageslider.setMajorTickSpacing(30);
-        ageslider.setPaintTicks(true);
-        ageslider.setAlignmentX(Component.LEFT_ALIGNMENT);
-        add(ageslider);
-        ageslider.addChangeListener(e -> {
-            int newValue = ageslider.getValue();
+        heightSlider = new PinkSlider(0, 250, 50); // 예시: 0~100 범위, 초기 50
+        heightSlider.setMajorTickSpacing(30);
+        heightSlider.setPaintTicks(true);
+        heightSlider.setAlignmentX(Component.LEFT_ALIGNMENT);
+        add(heightSlider);
+        heightSlider.addChangeListener(e -> {
+            int newValue = heightSlider.getValue();
             ageLabel.setText(newValue + "cm");
         });
-        ageLabel.setText(ageslider.getValue() + "cm");
+        ageLabel.setText(heightSlider.getValue() + "cm");
 
         add(Box.createVerticalStrut(15));
         JPanel title2 = UIUtils.createLabelOnlyRow("운동 경력은 어떻게 되시나요?");
@@ -64,7 +68,10 @@ public class PageExerciseHistory extends JPanel {
         RoundSelectButton selectButtonbtn2 = new RoundSelectButton("6~12개월");
         RoundSelectButton selectButtonbtn3 = new RoundSelectButton("12~18개월");
         RoundSelectButton selectButtonbtn4 = new RoundSelectButton("18개월 이상");
-        add(selectButtonbtn4);
+        selectButtonbtn.addActionListener(e -> selectedExperience = selectButtonbtn);
+        selectButtonbtn2.addActionListener(e -> selectedExperience = selectButtonbtn2);
+        selectButtonbtn3.addActionListener(e -> selectedExperience = selectButtonbtn3);
+        selectButtonbtn4.addActionListener(e -> selectedExperience = selectButtonbtn4);
 
         ButtonGroup group = new ButtonGroup();
         group.add(selectButtonbtn);
@@ -79,5 +86,18 @@ public class PageExerciseHistory extends JPanel {
         add(Box.createVerticalStrut(15));
         add(selectButtonbtn3);
         add(Box.createVerticalStrut(15));
+        add(selectButtonbtn4);
     }
+
+    public int getUserHeight() {
+        return heightSlider.getValue();
+    }
+
+    public String getExerciseExperience() {
+        if (selectedExperience != null) {
+            return selectedExperience.getText();  // 예: "0~6개월"
+        }
+        return null;
+    }
+
 }

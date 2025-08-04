@@ -36,7 +36,7 @@ public class loginPage extends JFrame {
         public JTextField userField;
         public JPasswordField passField;
         public JButton loginButton;
-        public JButton registerButton;
+        public JButton registrationButton;
 
         public LoginBox(Runnable onLoginSuccess) {
             // 바깥 레이아웃 설정
@@ -79,6 +79,15 @@ public class loginPage extends JFrame {
             loginButton.setMaximumSize(new Dimension(250,30));
             loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+            registrationButton = new RoundedButton("회원가입",25);
+            registrationButton.setMinimumSize(new Dimension(250, 30));
+            registrationButton.setPreferredSize(new Dimension(250, 30));
+            registrationButton.setMaximumSize(new Dimension(250,30));
+            registrationButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+            registrationButton.addActionListener(e -> {
+                JDialog signupDialog = new SignupDialog();
+                signupDialog.setVisible(true);
+            });
 
             loginButton.addActionListener(e -> {
                 String inputId = userField.getText();
@@ -143,11 +152,6 @@ public class loginPage extends JFrame {
                 }
             });
 
-// 2. ❗ UI 구성은 여기에 있어야 함 (리스너 밖)
-            registerButton = new JButton("회원가입");
-            registerButton.setMaximumSize(new Dimension(250,30));
-            registerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-
             JLabel titleLabel = new JLabel("Log in to your account");
             titleLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
             titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -163,6 +167,8 @@ public class loginPage extends JFrame {
             boxPanel.add(passField);
             boxPanel.add(Box.createVerticalStrut(15));
             boxPanel.add(loginButton);
+            boxPanel.add(Box.createVerticalStrut(10));
+            boxPanel.add(registrationButton);
             boxPanel.add(Box.createVerticalStrut(10));
             //boxPanel.add(registerButton); // 🔴 이제 회원가입 버튼도 포함
             boxPanel.add(Box.createVerticalGlue());

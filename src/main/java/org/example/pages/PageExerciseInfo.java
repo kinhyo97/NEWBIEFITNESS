@@ -7,7 +7,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PageExerciseInfo extends JPanel {
+    private RoundSelectButton selectedLocation;
+    private RoundSelectButton selectedTime;
+
     public PageExerciseInfo() {
+
         setBackground(Color.WHITE);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30)); // 여백 설정
@@ -65,6 +69,19 @@ public class PageExerciseInfo extends JPanel {
         group2.add(selectButtonbtn5);
         group2.add(selectButtonbtn6);
 
+        selectButtonbtn.addActionListener(e -> selectedLocation = selectButtonbtn);
+        selectButtonbtn2.addActionListener(e -> selectedLocation = selectButtonbtn2);
+        selectButtonbtn3.addActionListener(e -> selectedLocation = selectButtonbtn3);
+
+        selectButtonbtn4.addActionListener(e -> selectedTime = selectButtonbtn4);
+        selectButtonbtn5.addActionListener(e -> selectedTime = selectButtonbtn5);
+        selectButtonbtn6.addActionListener(e -> selectedTime = selectButtonbtn6);
+
+
+
+
+
+
         add(selectButtonbtn4);
         add(Box.createVerticalStrut(15));
         add(selectButtonbtn5);
@@ -73,4 +90,13 @@ public class PageExerciseInfo extends JPanel {
         add(Box.createVerticalStrut(15));
 
     }
+
+    public String getExerciseLocation() {
+        return selectedLocation != null ? selectedLocation.getText() : null;
+    }
+
+    public String getExerciseTime() {
+        return selectedTime != null ? selectedTime.getText() : null;
+    }
+
 }

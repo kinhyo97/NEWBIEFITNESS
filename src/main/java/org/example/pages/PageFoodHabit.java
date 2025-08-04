@@ -7,6 +7,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PageFoodHabit extends JPanel {
+
+    private RoundSelectButton selectedMealFreq;
+    private RoundSelectButton selectedDietType;
+
     public PageFoodHabit() {
         setBackground(Color.WHITE);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -60,11 +64,25 @@ public class PageFoodHabit extends JPanel {
         RoundSelectButton selectButtonbtn6 = new RoundSelectButton("고단백");
         RoundSelectButton selectButtonbtn7 = new RoundSelectButton("없음");
 
+
         ButtonGroup group2 = new ButtonGroup();
         group2.add(selectButtonbtn4);
         group2.add(selectButtonbtn5);
         group2.add(selectButtonbtn6);
         group2.add(selectButtonbtn7);
+
+        selectButtonbtn.addActionListener(e -> selectedMealFreq = selectButtonbtn);
+        selectButtonbtn2.addActionListener(e -> selectedMealFreq = selectButtonbtn2);
+        selectButtonbtn3.addActionListener(e -> selectedMealFreq = selectButtonbtn3);
+
+        selectButtonbtn4.addActionListener(e -> selectedDietType = selectButtonbtn4);
+        selectButtonbtn5.addActionListener(e -> selectedDietType = selectButtonbtn5);
+        selectButtonbtn6.addActionListener(e -> selectedDietType = selectButtonbtn6);
+        selectButtonbtn7.addActionListener(e -> selectedDietType = selectButtonbtn7);
+
+
+
+
 
         add(selectButtonbtn4);
         add(Box.createVerticalStrut(15));
@@ -78,4 +96,13 @@ public class PageFoodHabit extends JPanel {
 
 
     }
+
+    public String getMealFrequency() {
+        return selectedMealFreq != null ? selectedMealFreq.getText() : null;
+    }
+
+    public String getDietType() {
+        return selectedDietType != null ? selectedDietType.getText() : null;
+    }
+
 }

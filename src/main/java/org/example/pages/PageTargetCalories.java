@@ -6,6 +6,10 @@ import org.example.UIUtils;
 import org.example.component.*;
 
 public class PageTargetCalories extends JPanel {
+
+    private RoundSelectButton selectedGoal;
+    private JSlider Calorieslider;
+
     public PageTargetCalories() {
         setBackground(Color.WHITE);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -50,6 +54,11 @@ public class PageTargetCalories extends JPanel {
         add(selectButtonbtn3);
         add(Box.createVerticalStrut(15));
 
+        selectButtonbtn.addActionListener(e -> selectedGoal = selectButtonbtn);
+        selectButtonbtn2.addActionListener(e -> selectedGoal = selectButtonbtn2);
+        selectButtonbtn3.addActionListener(e -> selectedGoal = selectButtonbtn3);
+
+
 
 
         JLabel caloriesLable = new JLabel();  // 초기화만 해두고 아래서 값 설정
@@ -57,7 +66,7 @@ public class PageTargetCalories extends JPanel {
         add(caloriesLable);
         JPanel title2 = UIUtils.createLabelOnlyRow("목표 칼로리");
         add(title2);
-        JSlider Calorieslider = new PinkSlider(0, 4000, 50); // 예시: 0~100 범위, 초기 50
+        Calorieslider = new PinkSlider(0, 4000, 50); // 예시: 0~100 범위, 초기 50
         Calorieslider.setMajorTickSpacing(30);
         Calorieslider.setPaintTicks(true);
         Calorieslider.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -68,4 +77,9 @@ public class PageTargetCalories extends JPanel {
         });
         caloriesLable.setText(Calorieslider.getValue() + " Kcal");
     }
+
+    public int getTargetCalories() {
+        return Calorieslider.getValue();
+    }
+
 }
