@@ -1,0 +1,136 @@
+
+
+Version:	3.50
+CmdLine:	C:\Users\chunjae4\Desktop\NEWBIEFITNESS\newbiefitness.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\chunjae4\Desktop\NEWBIEFITNESS\.
+Requires JDK:	No
+Requires 64-Bit: No
+Java min ver:	1.017.000
+Java max ver:	1.020.000
+Substitute:	JAVA_HOME = D:\KCW\java\jdk-17.0.12
+Substitute:	PATH = C:\app\chunjae4\virtual\product\12.2.0\dbhome_1\bin;D:\KCW\java\jdk-17.0.12\bin;C:\Program Files\MariaDB 10.11\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\chunjae4\AppData\Local\Microsoft\WindowsApps;C:\Users\chunjae4\AppData\Local\JetBrains\IntelliJ IDEA 2025.1.2\bin;;C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2025.1.2\bin;;C:\Users\chunjae4\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\chunjae4\AppData\Roaming\npm;D:\KCW\java\jdk-17.0.12\bin;;D:\KCW\java\jdk-17.0.12\bin
+JRE paths:	D:\KCW\java\jdk-17.0.12;C:\app\chunjae4\virtual\product\12.2.0\dbhome_1\bin;D:\KCW\java\jdk-17.0.12\bin;C:\Program Files\MariaDB 10.11\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\chunjae4\AppData\Local\Microsoft\WindowsApps;C:\Users\chunjae4\AppData\Local\JetBrains\IntelliJ IDEA 2025.1.2\bin;;C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2025.1.2\bin;;C:\Users\chunjae4\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\chunjae4\AppData\Roaming\npm;D:\KCW\java\jdk-17.0.12\bin;;D:\KCW\java\jdk-17.0.12\bin
+Check launcher:	D:\KCW\java\jdk-17.0.12\bin\javaw.exe (OK)
+Version string: 1.017.000_012 / 64-Bit (OK)
+Launcher:	D:\KCW\java\jdk-17.0.12\bin\javaw.exe
+Launcher args:	-jar "C:\Users\chunjae4\Desktop\NEWBIEFITNESS\newbiefitness.exe"
+Args length:	64/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\chunjae4\Desktop\NEWBIEFITNESS\newbiefitness.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\chunjae4\Desktop\NEWBIEFITNESS\.
+Requires JDK:	No
+Requires 64-Bit: No
+Java min ver:	1.017.000
+Java max ver:	1.020.000
+JRE paths:	jre
+Check launcher:	C:\Users\chunjae4\Desktop\NEWBIEFITNESS\jre\bin\javaw.exe (OK)
+Version string: 1.017.000_012 / 64-Bit (OK)
+Launcher:	C:\Users\chunjae4\Desktop\NEWBIEFITNESS\jre\bin\javaw.exe
+Launcher args:	-jar "C:\Users\chunjae4\Desktop\NEWBIEFITNESS\newbiefitness.exe"
+Args length:	64/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\chunjae4\Desktop\NEWBIEFITNESS\newbiefitness.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\chunjae4\Desktop\NEWBIEFITNESS\.
+Requires JDK:	No
+Requires 64-Bit: No
+Java min ver:	
+Java max ver:	
+JRE paths:	jre
+Check launcher:	C:\Users\chunjae4\Desktop\NEWBIEFITNESS\jre\bin\javaw.exe (OK)
+Version string: 1.017.000_012 / 64-Bit (OK)
+Launcher:	C:\Users\chunjae4\Desktop\NEWBIEFITNESS\jre\bin\javaw.exe
+Launcher args:	-jar "C:\Users\chunjae4\Desktop\NEWBIEFITNESS\newbiefitness.exe"
+Args length:	64/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\chunjae4\Desktop\NEWBIEFITNESS\newbie.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\chunjae4\Desktop\NEWBIEFITNESS\.
+Requires JDK:	No
+Requires 64-Bit: No
+Java min ver:	
+Java max ver:	
+Substitute:	JAVA_HOME = D:\KCW\java\jdk-17.0.12
+Substitute:	PATH = C:\app\chunjae4\virtual\product\12.2.0\dbhome_1\bin;D:\KCW\java\jdk-17.0.12\bin;C:\Program Files\MariaDB 10.11\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files\WiX Toolset v6.0\bin\;C:\Users\chunjae4\AppData\Local\Microsoft\WindowsApps;C:\Users\chunjae4\AppData\Local\JetBrains\IntelliJ IDEA 2025.1.2\bin;C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2025.1.2\bin;C:\Users\chunjae4\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\chunjae4\AppData\Roaming\npm;D:\KCW\java\jdk-17.0.12\bin
+JRE paths:	D:\KCW\java\jdk-17.0.12;C:\app\chunjae4\virtual\product\12.2.0\dbhome_1\bin;D:\KCW\java\jdk-17.0.12\bin;C:\Program Files\MariaDB 10.11\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files\WiX Toolset v6.0\bin\;C:\Users\chunjae4\AppData\Local\Microsoft\WindowsApps;C:\Users\chunjae4\AppData\Local\JetBrains\IntelliJ IDEA 2025.1.2\bin;C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2025.1.2\bin;C:\Users\chunjae4\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\chunjae4\AppData\Roaming\npm;D:\KCW\java\jdk-17.0.12\bin
+Check launcher:	D:\KCW\java\jdk-17.0.12\bin\javaw.exe (OK)
+Version string: 1.017.000_012 / 64-Bit (OK)
+Launcher:	D:\KCW\java\jdk-17.0.12\bin\javaw.exe
+Launcher args:	-jar "C:\Users\chunjae4\Desktop\NEWBIEFITNESS\newbie.exe"
+Args length:	57/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\chunjae4\Desktop\new\newbie.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\chunjae4\Desktop\new\.
+Requires JDK:	No
+Requires 64-Bit: No
+Java min ver:	
+Java max ver:	
+Substitute:	JAVA_HOME = D:\KCW\java\jdk-17.0.12
+Substitute:	PATH = C:\app\chunjae4\virtual\product\12.2.0\dbhome_1\bin;D:\KCW\java\jdk-17.0.12\bin;C:\Program Files\MariaDB 10.11\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files\WiX Toolset v6.0\bin\;C:\Users\chunjae4\AppData\Local\Microsoft\WindowsApps;C:\Users\chunjae4\AppData\Local\JetBrains\IntelliJ IDEA 2025.1.2\bin;C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2025.1.2\bin;C:\Users\chunjae4\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\chunjae4\AppData\Roaming\npm;D:\KCW\java\jdk-17.0.12\bin
+JRE paths:	D:\KCW\java\jdk-17.0.12;C:\app\chunjae4\virtual\product\12.2.0\dbhome_1\bin;D:\KCW\java\jdk-17.0.12\bin;C:\Program Files\MariaDB 10.11\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files\WiX Toolset v6.0\bin\;C:\Users\chunjae4\AppData\Local\Microsoft\WindowsApps;C:\Users\chunjae4\AppData\Local\JetBrains\IntelliJ IDEA 2025.1.2\bin;C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2025.1.2\bin;C:\Users\chunjae4\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\chunjae4\AppData\Roaming\npm;D:\KCW\java\jdk-17.0.12\bin
+Check launcher:	D:\KCW\java\jdk-17.0.12\bin\javaw.exe (OK)
+Version string: 1.017.000_012 / 64-Bit (OK)
+Launcher:	D:\KCW\java\jdk-17.0.12\bin\javaw.exe
+Launcher args:	-jar "C:\Users\chunjae4\Desktop\new\newbie.exe"
+Args length:	47/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\chunjae4\Desktop\new\newbie.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\chunjae4\Desktop\new\.
+Requires JDK:	No
+Requires 64-Bit: No
+Java min ver:	
+Java max ver:	
+Substitute:	JAVA_HOME = D:\KCW\java\jdk-17.0.12
+Substitute:	PATH = C:\app\chunjae4\virtual\product\12.2.0\dbhome_1\bin;D:\KCW\java\jdk-17.0.12\bin;C:\Program Files\MariaDB 10.11\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files\WiX Toolset v6.0\bin\;C:\Users\chunjae4\AppData\Local\Microsoft\WindowsApps;C:\Users\chunjae4\AppData\Local\JetBrains\IntelliJ IDEA 2025.1.2\bin;C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2025.1.2\bin;C:\Users\chunjae4\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\chunjae4\AppData\Roaming\npm;D:\KCW\java\jdk-17.0.12\bin
+JRE paths:	D:\KCW\java\jdk-17.0.12;C:\app\chunjae4\virtual\product\12.2.0\dbhome_1\bin;D:\KCW\java\jdk-17.0.12\bin;C:\Program Files\MariaDB 10.11\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files\WiX Toolset v6.0\bin\;C:\Users\chunjae4\AppData\Local\Microsoft\WindowsApps;C:\Users\chunjae4\AppData\Local\JetBrains\IntelliJ IDEA 2025.1.2\bin;C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2025.1.2\bin;C:\Users\chunjae4\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\chunjae4\AppData\Roaming\npm;D:\KCW\java\jdk-17.0.12\bin
+Check launcher:	D:\KCW\java\jdk-17.0.12\bin\javaw.exe (OK)
+Version string: 1.017.000_012 / 64-Bit (OK)
+Launcher:	D:\KCW\java\jdk-17.0.12\bin\javaw.exe
+Launcher args:	-jar "C:\Users\chunjae4\Desktop\new\newbie.exe"
+Args length:	47/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\chunjae4\Desktop\new\newbie.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\chunjae4\Desktop\new\.
+Requires JDK:	No
+Requires 64-Bit: No
+Java min ver:	
+Java max ver:	
+Substitute:	JAVA_HOME = D:\KCW\java\jdk-17.0.12
+Substitute:	PATH = C:\app\chunjae4\virtual\product\12.2.0\dbhome_1\bin;D:\KCW\java\jdk-17.0.12\bin;C:\Program Files\MariaDB 10.11\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files\WiX Toolset v6.0\bin\;C:\Users\chunjae4\AppData\Local\Microsoft\WindowsApps;C:\Users\chunjae4\AppData\Local\JetBrains\IntelliJ IDEA 2025.1.2\bin;C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2025.1.2\bin;C:\Users\chunjae4\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\chunjae4\AppData\Roaming\npm;D:\KCW\java\jdk-17.0.12\bin
+JRE paths:	D:\KCW\java\jdk-17.0.12;C:\app\chunjae4\virtual\product\12.2.0\dbhome_1\bin;D:\KCW\java\jdk-17.0.12\bin;C:\Program Files\MariaDB 10.11\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files\WiX Toolset v6.0\bin\;C:\Users\chunjae4\AppData\Local\Microsoft\WindowsApps;C:\Users\chunjae4\AppData\Local\JetBrains\IntelliJ IDEA 2025.1.2\bin;C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2025.1.2\bin;C:\Users\chunjae4\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\chunjae4\AppData\Roaming\npm;D:\KCW\java\jdk-17.0.12\bin
+Check launcher:	D:\KCW\java\jdk-17.0.12\bin\javaw.exe (OK)
+Version string: 1.017.000_012 / 64-Bit (OK)
+Launcher:	D:\KCW\java\jdk-17.0.12\bin\javaw.exe
+Launcher args:	-jar "C:\Users\chunjae4\Desktop\new\newbie.exe"
+Args length:	47/32768 chars
+Exit code:	0

@@ -1,0 +1,89 @@
+package org.example.pages;
+
+import org.example.UIUtils;
+import org.example.component.RoundSelectButton;
+import javax.swing.*;
+import java.awt.*;
+
+
+$ 소제목 코드
+JPanel title = UIUtils.createLabelOnlyRow("어디에서 주로 운동하시나요?");
+        add(title);
+
+$ 버튼그룹코드
+1,2,3버튼
+RoundSelectButton selectButtonbtn = new RoundSelectButton("집");
+        RoundSelectButton selectButtonbtn2 = new RoundSelectButton("헬스장");
+        RoundSelectButton selectButtonbtn3 = new RoundSelectButton("야외");
+
+// 버튼 그룹 생성
+        ButtonGroup group = new ButtonGroup();
+        group.add(selectButtonbtn);
+        group.add(selectButtonbtn2);
+        group.add(selectButtonbtn3);
+
+// 패널에 추가
+        add(selectButtonbtn);
+        add(Box.createVerticalStrut(15));
+        add(selectButtonbtn2);
+        add(Box.createVerticalStrut(15));
+        add(selectButtonbtn3);
+        add(Box.createVerticalStrut(15));
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+4,5,6버튼
+RoundSelectButton selectButtonbtn4 = new RoundSelectButton("아침");
+        RoundSelectButton selectButtonbtn5 = new RoundSelectButton("점심");
+        RoundSelectButton selectButtonbtn6 = new RoundSelectButton("저녁");
+
+        ButtonGroup group2 = new ButtonGroup();
+        group2.add(selectButtonbtn4);
+        group2.add(selectButtonbtn5);
+        group2.add(selectButtonbtn6);
+
+        add(selectButtonbtn4);
+        add(Box.createVerticalStrut(15));
+        add(selectButtonbtn5);
+        add(Box.createVerticalStrut(15));
+        add(selectButtonbtn6);
+        add(Box.createVerticalStrut(15));
+
+
+$ Selector ( 월화수목금토일 ) - 내용수정시 클래스 추가
+selector = new WorkoutDaySelector();
+        selector = new WorkoutDaySelector();
+        selector.setAlignmentX(Component.LEFT_ALIGNMENT); // 🔑 반드시 명시
+        add(selector); // ✅ wrapper 없이 직접 추가
+
+$ Slider
+
+JLabel ageLabel = new JLabel();  // 초기화만 해두고 아래서 값 설정
+        ageLabel.setFont(new Font("맑은 고딕", Font.BOLD, 18));
+        add(ageLabel);
+
+JSlider ageslider = new PinkSlider(0, 250, 50); // 예시: 0~100 범위, 초기 50
+        ageslider.setMajorTickSpacing(30);
+        ageslider.setPaintTicks(true);
+        add(ageslider);
+        ageslider.addChangeListener(e -> {
+            int newValue = ageslider.getValue();
+            ageLabel.setText(newValue + "cm");
+        });
+        ageLabel.setText(ageslider.getValue() + "cm");
+
+$ 성별선택 패널 - 클래스 생성 필요
+//성별 label
+        JLabel genderTitle = new JLabel("성별");
+        genderTitle.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+        genderTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+        add(genderTitle);
+        add(Box.createVerticalStrut(10)); // 제목 아래 여백
+
+// 2. 성별 선택 패널
+        JPanel genderSelectPanel = new JPanel(new GridLayout(1, 2, 20, 0));
+        genderSelectPanel.setBackground(Color.WHITE);
+        genderSelectPanel.setMaximumSize(new Dimension(400, 150));
+        genderSelectPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+// 아이콘 공통 경로
+        ImageIcon genderIcon = UIUtils.createRoundedIcon("/icons/newbiehealthlogo.png", 80);
